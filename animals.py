@@ -1,12 +1,24 @@
-class Animal:
-    def __init__(self):
+# -*- coding: utf-8 -*-
+
+__author
+
+class Herbivore:
+    def __init__(self, weight=10, F = 10, beta = 0.9, eta = 0.25):
         self.age = 0
+        self.w = weight
+        self.F = F
+        self.beta = beta
+        self.eta = eta
+
+    def set_parameters(self, parameter):
+        pass
 
     def aging(self):
         self.age += 1
 
     def weightloss(self):
-        pass
+        # weight reduced by mu/year
+        self.w -= self.eta * self.w
 
     def movement(self):
         pass
@@ -17,17 +29,8 @@ class Animal:
     def birth(self):
         pass
 
-    def eating(self):
-        pass
+    def eating(self): # må vite hva som er i ruta (f), beta, F
+        self.w += self.F * self.beta
 
-
-def Herbivore(Animal):
-    def __init__(self, zeta, xi):
-        self.weight = weight
-
-
-def Carnivore(Animal):
-    def __init__(self, a_half, phi_age, omega, F, DeltaPhiMax):
-        self.weight = weight
 
 

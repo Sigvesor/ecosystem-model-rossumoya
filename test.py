@@ -1,5 +1,16 @@
-from animals import *
+import animals
+import landscape
 
 def test_animals():
-    animal = Animal()
-    assert animal.age == 0
+    bulbasaur = animals.Herbivore()
+    assert bulbasaur.age == 0
+    bulbasaur.aging()
+    w_before = bulbasaur.w
+    bulbasaur.eating()
+    assert bulbasaur.w > w_before
+    assert bulbasaur.age == 1
+    w_before = bulbasaur.w
+    bulbasaur.weightloss()
+    assert bulbasaur.w < w_before
+
+
