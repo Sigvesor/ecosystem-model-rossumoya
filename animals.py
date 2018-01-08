@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
-__author
+__author__ = 'Sigve Sorensen', 'Filip Rotnes'
+__email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
+
 
 class Herbivore:
     def __init__(self, weight=10, F = 10, beta = 0.9, eta = 0.25):
