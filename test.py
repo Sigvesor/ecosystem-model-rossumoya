@@ -19,6 +19,21 @@ def test_animals():
     herbivore.weightloss()
     assert herbivore.w < w_before
 
+    herbivore.fitness()
+    fit1 = herbivore.phi
+    assert 0 <= fit1 <= 1
+    herbivore.aging()
+    herbivore.fitness()
+    fit2 = herbivore.phi
+    assert fit1 > fit2
+    herbivore.weightloss()
+    herbivore.fitness()
+    fit3 = herbivore.phi
+    assert fit2 > fit3
+
+    assert not herbivore.birth(1)
+    assert herbivore.birth(100000)
+
 
 def test_jungle():
     landscape.Jungle.set_parameters({'f_max': 700})
@@ -33,5 +48,4 @@ def test_jungle():
 
 def test_simulation():
     # should perform jungle_instance.eating_requeast(herbivore_instance.F)
-
-
+    pass
