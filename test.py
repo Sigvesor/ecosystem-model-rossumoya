@@ -8,15 +8,27 @@ import animals
 import landscape
 
 def test_animals():
-    bulbasaur = animals.Herbivore()
-    assert bulbasaur.age == 0
-    bulbasaur.aging()
-    w_before = bulbasaur.w
-    bulbasaur.eating()
-    assert bulbasaur.w > w_before
-    assert bulbasaur.age == 1
-    w_before = bulbasaur.w
-    bulbasaur.weightloss()
-    assert bulbasaur.w < w_before
+    herbivore = animals.Herbivore()
+    assert herbivore.age == 0
+    herbivore.aging()
+    w_before = herbivore.w
+    herbivore.eating()
+    assert herbivore.w > w_before
+    assert herbivore.age == 1
+    w_before = herbivore.w
+    herbivore.weightloss()
+    assert herbivore.w < w_before
+
+
+def test_jungle():
+    landscape.Jungle.set_parameters({'f_max': 700})
+    the_jungle = landscape.Jungle()
+    assert the_jungle.f == 700
+    assert the_jungle.eat_request(100) == 100
+    assert the_jungle.eat_request(800) == 600
+    assert the_jungle.eat_request(100) == 0
+    the_jungle.regenerate()
+    assert the_jungle.f == 700
+
 
 
