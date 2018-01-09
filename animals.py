@@ -3,8 +3,10 @@
 __author__ = 'Sigve Sorensen', 'Filip Rotnes'
 __email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
 
+dft_herbivore = {}
 
 class Herbivore:
+
     def __init__(self, weight=10, F = 10, beta = 0.9, eta = 0.25):
         self.age = 0
         self.w = weight
@@ -12,8 +14,8 @@ class Herbivore:
         self.beta = beta
         self.eta = eta
 
-    def set_parameters(self, parameter):
-        pass
+    def set_parameters(self, parameters=dft_herbivore):
+        self.parameters = parameters
 
     def aging(self):
         self.age += 1
