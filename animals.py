@@ -33,8 +33,8 @@ class Herbivore:
     def birth(self):
         pass
 
-    def eating(self): # må vite hva som er i ruta (f), beta, F
-        self.w += self.F * self.beta
+    def eating(self, available_fodder): # må vite hva som er i ruta (f), beta, F
+        self.w += available_fodder * self.beta
 
 
 
