@@ -12,7 +12,7 @@ def test_animals():
     assert herbivore.age == 0
     herbivore.aging()
     w_before = herbivore.w
-    herbivore.eating()
+    herbivore.eating(100)
     assert herbivore.w > w_before
     assert herbivore.age == 1
     w_before = herbivore.w
@@ -30,5 +30,8 @@ def test_jungle():
     the_jungle.regenerate()
     assert the_jungle.f == 700
 
+
+def test_simulation():
+    # should perform jungle_instance.eating_requeast(herbivore_instance.F)
 
 
