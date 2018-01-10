@@ -10,13 +10,13 @@ __email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
 class Herbivore:
 
     param = {'w_birth': 8.0, 'sigma_birth': 1.5, 'beta': 0.9,
-            'a_half': 40.0, 'phi_age': 0.2, 'w_half': 10.0,
-            'phi_weight': 0.1, 'mu': 0.25, 'lambda': 1.0,
-            'gamma': 0.2, 'zeta': 3.5, 'xi': 1.2,
-            'omega': 0.4, 'F': 10.0, 'eta': 0.05}
+             'a_half': 40.0, 'phi_age': 0.2, 'w_half': 10.0,
+             'phi_weight': 0.1, 'mu': 0.25, 'lambda': 1.0,
+             'gamma': 0.2, 'zeta': 3.5, 'xi': 1.2,
+             'omega': 0.4, 'F': 10.0, 'eta': 0.05}
 
-    def __init__(self, weight=12):
-        self.age = 0
+    def __init__(self, weight=8.0, age=0):
+        self.age = age
         self.w = weight
         self.phi = None
 
