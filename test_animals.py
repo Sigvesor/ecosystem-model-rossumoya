@@ -41,7 +41,7 @@ def test_birth():
 
 def test_death():
     herbivore = animals.Herbivore()
-    herbivore.omega = 1
+    herbivore.param['omega'] = 1
     herbivore.phi = 0
     assert herbivore.death()
     herbivore.phi = 1

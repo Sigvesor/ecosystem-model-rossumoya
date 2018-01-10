@@ -18,10 +18,11 @@ __email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
 #
 #
 class Jungle:
-    f_max = 800.0
+
+    param = {'f_max': 800.0}
 
     def __init__(self):
-        self.f = self.f_max
+        self.f = self.param['f_max']
 
     def eat_request(self, amount):
         if self.f >= amount:
@@ -33,13 +34,12 @@ class Jungle:
             return remaining_amount
 
     def regenerate(self):
-        self.f = self.f_max
+        self.f = self.param['f_max']
 
     @classmethod
-    def set_parameters(self, parameters):
-        self.f_max = parameters['f_max']
-
-
+    def set_parameters(self, parameters=param):
+        for parameter in parameters:
+            self.param[parameter] = parameters[parameter]
 
 
 #class Savannah(Landscape):
