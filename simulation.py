@@ -38,7 +38,9 @@ class BioSim:
         island_map = Jungle()
  #       for individual in ini_pop:
 
-        self.herbs = [Herbivore() for n in range(len(ini_pop))
+        self.herbs = [Herbivore(weight=ini_pop[n]['weight'],
+                                age=ini_pop[n]['age']) for
+                                n in range(len(ini_pop))
                         if ini_pop[n]['species'] == 'Herbivore']
 
 
