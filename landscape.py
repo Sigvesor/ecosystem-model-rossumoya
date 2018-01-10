@@ -19,9 +19,10 @@ __email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
 #
 class Jungle:
     f_max = 800.0
-    def __init__(self):
 
+    def __init__(self):
         self.f = self.f_max
+
     def eat_request(self, amount):
         if self.f >= amount:
             self.f -= amount

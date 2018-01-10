@@ -6,7 +6,7 @@ __email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
 
 import animals
 
-def test_year():
+def test_biocycle():
     herbivore = animals.Herbivore()
     assert herbivore.age == 0
     herbivore.aging()
@@ -38,6 +38,7 @@ def test_birth():
     assert not herbivore.birth(1)
     assert herbivore.birth(100000)
 
+
 def test_death():
     herbivore = animals.Herbivore()
     herbivore.omega = 1
@@ -45,3 +46,5 @@ def test_death():
     assert herbivore.death()
     herbivore.phi = 1
     assert not herbivore.death()
+
+

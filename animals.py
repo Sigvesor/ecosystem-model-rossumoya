@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import random
-import math
+from math import exp as e
 
 __author__ = 'Sigve Sorensen', 'Filip Rotnes'
 __email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
@@ -33,7 +33,7 @@ class Herbivore:
         self.age += 1
 
     def fitness(self):
-        self.phi = 1 / (1+math.exp(self.phi_age*(self.age - self.a_half))) * 1 / (1+math.exp(-self.phi_weight*(self.w - self.w_half)))
+        self.phi = 1 / (1+e(self.phi_age*(self.age - self.a_half))) * 1 / (1+e(-self.phi_weight*(self.w - self.w_half)))
         return self.phi
 
     def weightloss(self):

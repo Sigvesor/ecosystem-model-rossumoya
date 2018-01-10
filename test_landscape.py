@@ -3,6 +3,8 @@
 __author__ = 'Sigve Sorensen', 'Filip Rotnes'
 __email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
 
+import landscape
+
 def test_jungle():
     landscape.Jungle.set_parameters({'f_max': 700})
     the_jungle = landscape.Jungle()
