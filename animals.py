@@ -15,6 +15,7 @@ class Herbivore:
     phi_weight = 0.1
     a_half = 40
     w_half = 10
+    omega = 0.4
 
     def __init__(self, weight=12, F=10, beta=0.9, eta=0.25):
         self.age = 0
@@ -43,7 +44,8 @@ class Herbivore:
         pass
 
     def death(self):
-        pass
+        p_death = self.omega * (1 - self.phi)
+        return random.random() <= p_death
 
     def birth(self, animals_in_cell):
         p_of_birth = min([1, self.gamma*self.phi*(animals_in_cell-1)])
