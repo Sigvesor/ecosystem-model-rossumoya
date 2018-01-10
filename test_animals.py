@@ -5,7 +5,6 @@ __email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
 
 
 import animals
-import landscape
 
 def test_animals():
     herbivore = animals.Herbivore()
@@ -33,19 +32,3 @@ def test_animals():
 
     assert not herbivore.birth(1)
     assert herbivore.birth(100000)
-
-
-def test_jungle():
-    landscape.Jungle.set_parameters({'f_max': 700})
-    the_jungle = landscape.Jungle()
-    assert the_jungle.f == 700
-    assert the_jungle.eat_request(100) == 100
-    assert the_jungle.eat_request(800) == 600
-    assert the_jungle.eat_request(100) == 0
-    the_jungle.regenerate()
-    assert the_jungle.f == 700
-
-
-def test_simulation():
-    # should perform jungle_instance.eating_requeast(herbivore_instance.F)
-    pass
