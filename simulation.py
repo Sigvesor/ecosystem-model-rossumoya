@@ -35,7 +35,7 @@ class BioSim:
         :param ini_pop:
         """
 
-        island_map = Jungle()
+        self.map = Jungle()
  #       for individual in ini_pop:
 
         self.herbs = [Herbivore(weight=ini_pop[n]['weight'],
