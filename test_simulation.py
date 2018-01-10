@@ -4,6 +4,15 @@ __author__ = 'Sigve Sorensen', 'Filip Rotnes'
 __email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
 
 from simulation import *
+import animals
+
+def test_init():
+    sim = BioSim([{'species':'Herbivore', 'age':4,'weight':15}])
+    assert len(sim.herbs) == 1
+    assert type(sim.herbs[0]) == animals.Herbivore
+
+def test_simulation():
+    pass
 
 def test_map_construction():
     """

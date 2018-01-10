@@ -25,8 +25,26 @@ for _ in nrounds:
     regenerate fodder
 """
 
-def jungle_constructor():
-    pass
+class BioSim:
 
-def Bio_Sim():
-    island_map = Jungle()
+    def __init__(self, ini_pop):
+
+        """
+        sim = BioSim([{'species':'Herbivore'}, {'species':'Carnivore'}])
+        sim.herbs
+        :param ini_pop:
+        """
+
+        island_map = Jungle()
+ #       for individual in ini_pop:
+
+        self.herbs = [Herbivore() for n in range(len(ini_pop))
+                        if ini_pop[n]['species'] == 'Herbivore']
+
+
+
+    def simulate(self): #, num_steps=100, vis_steps=1, img_steps=2000):
+        pass
+
+    def add_population(self): # , population):
+        pass
