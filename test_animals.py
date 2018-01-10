@@ -34,6 +34,7 @@ def test_fitness():
 
 def test_birth():
     herbivore = animals.Herbivore()
+    herbivore.fitness()
     assert not herbivore.birth(1)
     assert herbivore.birth(100000)
 
