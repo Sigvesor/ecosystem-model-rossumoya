@@ -6,7 +6,7 @@ __email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
 
 import animals
 
-def test_animals():
+def test_year():
     herbivore = animals.Herbivore()
     assert herbivore.age == 0
     herbivore.aging()
@@ -18,6 +18,8 @@ def test_animals():
     herbivore.weightloss()
     assert herbivore.w < w_before
 
+def test_fitness():
+    herbivore = animals.Herbivore()
     herbivore.fitness()
     fit1 = herbivore.phi
     assert 0 <= fit1 <= 1
@@ -30,5 +32,12 @@ def test_animals():
     fit3 = herbivore.phi
     assert fit2 > fit3
 
+def test_birth():
+    herbivore = animals.Herbivore()
     assert not herbivore.birth(1)
     assert herbivore.birth(100000)
+
+def test_death():
+    herbivore = animals.Herbivore()
+    herbivore.phi = 0
+    assert herbivore.death()
