@@ -64,7 +64,8 @@ class Herbivore:
         """Create Herbivore with age 0."""
         self.weight = weight
         self.age = age
-        self.phi = None
+        self.phi = 1 / (1 + e(self.default_params['phi_age'] * (self.age - self.default_params['a_half']))) \
+                   * 1 / (1 + e(-self.default_params['phi_weight'] * (self.weight - self.default_params['w_half'])))
 
     def ages(self):
         """Herbivoar ages by one cycle."""
