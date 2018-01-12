@@ -3,50 +3,25 @@
 __author__ = 'Sigve Sorensen', 'Filip Rotnes'
 __email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
 
-import pandas as pd
-from landscape import *
-from animals import *
-"""
-plan:
+from island import Population
 
-make map
-make animals and place
-for _ in nrounds:
-    1. order by fitness
-    2. for animal:
-            sim_eat(animal)
-            update phi
-    3. mate and add new animals
-    4. if animal.phi !=  None:
-        ageing()
-        weightloss()
-        death()
-    update phi
-    regenerate fodder
-"""
 
 class BioSim:
+    """
+    sim = BioSim(10)
+    sim.sim.pops[0].f_max = 10
+    plt.plot(sim.simulate(100))
+    plt.show()
+    """
 
     def __init__(self, ini_pop):
+        self.ini_pop = ini_pop
+        self.sim = Population(n_num_herbs=ini_pop)
 
-        """
-        sim = BioSim([{'species':'Herbivore'}, {'species':'Carnivore'}])
-        sim.herbs
-        :param ini_pop:
-        """
+    def simulate(self, num_steps):
 
-        self.map = Jungle()
- #       for individual in ini_pop:
+        population_list = [self.ini_pop]
 
-        self.herbs = [Herbivore(weight=ini_pop[n]['weight'],
-                                age=ini_pop[n]['age']) for
-                                n in range(len(ini_pop))
-                        if ini_pop[n]['species'] == 'Herbivore']
-
-
-
-    def simulate(self): #, num_steps=100, vis_steps=1, img_steps=2000):
-        pass
-
-    def add_population(self): # , population):
-        pass
+        for step in range(num_steps):
+            population_list.append(self.sim.cycle())
+        return population_list
