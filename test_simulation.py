@@ -5,17 +5,19 @@ __email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
 
 from simulation import *
 import animals
-import landscape
+import island
+
 
 def test_init():
-    sim = BioSim([{'species':'Herbivore', 'age':4,'weight':15}])
+    sim = BioSim([{'species': 'Herbivore', 'age': 4, 'weight': 15}])
     assert len(sim.herbs) == 1
     assert type(sim.herbs[0]) == animals.Herbivore
 
+
 def test_simulate():
     sim = BioSim([{'species': 'Herbivore', 'age':4, 'weight':15}])
-
     pass
+
 
 def test_map_construction():
     """
@@ -28,6 +30,7 @@ def test_map_construction():
     # assert type(island_map) == pd.core.frame.DataFrame
     pass
 
+
 def test_animal_placement():
     """
     is the right number of animals created?
@@ -35,6 +38,7 @@ def test_animal_placement():
     :return:
     """
     pass
+
 
 def test_eating():
     """
@@ -61,8 +65,8 @@ def test_eating_order():
     and the unfit starve?
     :return:
     """
-    
     pass
+
 
 def test_population_growth():
     """
@@ -71,6 +75,7 @@ def test_population_growth():
     :return:
     """
     pass
+
 
 def test_population_decline():
     """ test that the population declines as a result of death due to
