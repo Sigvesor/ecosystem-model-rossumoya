@@ -5,13 +5,13 @@ __email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
 
 from animals import Herbivore
 
-
-class Jungle:
+# class Landscape
+class Landscape:
     """A jungle containing Herbivoars"""
 
-    f_max = 800.0
+    #f_max = 0
 
-    default_params = {'f_max': f_max}
+    default_params = {'f_max': 0}
 
     @classmethod
     def set_params(cls, new_params=default_params):
@@ -57,9 +57,9 @@ class Jungle:
             number of Herbivores in the jungle.
         """
 
-        self.f_max = Jungle.default_params['f_max']
-        self.f = self.f_max
+        self.f = self.default_params['f_max']
         self.pop_herbs = [Herbivore() for _ in range(num_herbs)]
+        #self.pop_carns = [Carnivore() for _ in range(num_carns)]
 
     def get_num_herbs(self):
         """Return number of Herbivores in Jungle"""
@@ -116,4 +116,35 @@ class Jungle:
             herb.eating(request)
 
     def regenerate(self):
-        self.f = self.f_max
+        # if self.f != self.f_max
+        # if jungle...
+        self.f = self.default_params['f_max']
+
+
+class Jungle(Landscape):
+
+    default_params = {'f_max': 800.0}
+
+    #f_max = default_params['f_max']
+
+
+class Savannah(Landscape):
+
+    default_params = {'f_max': 300.0, 'alpha': 0.3}
+
+    #f_max = default_params['f_max']
+    #alpha = default_params['alpha']
+
+
+
+
+
+
+
+
+
+
+
+
+
+# class Savannah
