@@ -106,9 +106,15 @@ class Herbivore:
         bool
             True if Herbivore gives birth.
         """
-
-        p_of_birth = min([1, self.default_params['gamma'] * self.phi * (pop_herbs - 1)])
-        return random.random() <= p_of_birth
+        if self.weight < self.default_params['zeta'] *\
+                (self.default_params['w_birth'] +
+                     self.default_params['sigma_birth']):
+            p_of_birth = 0
+        else:
+            p_of_birth = min([1, self.default_params['gamma'] * self.phi *
+                              (pop_herbs - 1)])
+        reproduction_successful = random.random() <= p_of_birth
+        return reproduction_successful
 
     def eating(self, available_fodder):
         """

@@ -84,7 +84,13 @@ class Landscape:
         """For each Herbivore reproducing, add one new."""
 
         def newborns(pop):
-            return [Herbivore() for herb in pop if herb.birth(len(pop))]
+            babies = []
+            for herb in pop:
+                if herb.birth(len(pop)):
+                    herb.weight -= 8 # her burde vi koble til vekta til barnet..
+                    babies.append(Herbivore())
+                return babies
+            # return [Herbivore() for herb in pop if herb.birth(len(pop))]
 
         self.pop_herbs.extend(newborns(self.pop_herbs))
 

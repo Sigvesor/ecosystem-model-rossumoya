@@ -27,7 +27,8 @@ if __name__ == "__main__":
     #Savannah.set_params({'f_max': 300})
 
     sim = BioSim(10)
-    sim.simulate(15)
+    #sim.simulate(15)
     #sim.sim.pops[0].f_max = 2
-    #plt.plot(sim.simulate(10))
-    #plt.show()
+    plt.plot(sim.simulate(100))
+    #plt.hist([sim.sim.pops[0].pop_herbs[i].age for i in range(len(sim.sim.pops[0].pop_herbs))])
+    plt.show()
