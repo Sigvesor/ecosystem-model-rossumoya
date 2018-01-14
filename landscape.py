@@ -92,17 +92,18 @@ class Landscape:
         for herb in self.pop_herbs:
             herb.weightloss()
 
-    def fitness_sort(self):
+    def update_fitness(self):
         for herb in self.pop_herbs:
             herb.fitness()
 
-        asc = False
-        while not asc:
-            asc = True
+    def fitness_sort(self):
+        desc = False
+        while not desc:
+            desc = True
             for herb in range(len(self.pop_herbs) - 1):
                 if self.pop_herbs[herb].phi < self.pop_herbs[herb + 1].phi:
                     self.pop_herbs[herb], self.pop_herbs[herb + 1] = self.pop_herbs[herb + 1], self.pop_herbs[herb]
-                    asc = False
+                    desc = False
         return self.pop_herbs
 
     def eat_request(self):
@@ -114,11 +115,14 @@ class Landscape:
                 request = self.f
                 self.f = 0
             herb.eating(request)
+            herb.fitness()
 
     def regenerate(self):
-        # if self.f != self.f_max
-        # if jungle...
-        self.f = self.default_params['f_max']
+        if self.f != self.default_params['f_max']:
+            if type(self) == Jungle:
+                self.f = self.default_params['f_max']
+            elif type(self) == Savannah:
+                self.f += self.default_params['alpha'] * (self.default_params['f_max'] - self.f)
 
 
 class Jungle(Landscape):
@@ -134,6 +138,8 @@ class Savannah(Landscape):
 
     #f_max = default_params['f_max']
     #alpha = default_params['alpha']
+
+
 
 
 
