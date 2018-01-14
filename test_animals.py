@@ -7,7 +7,7 @@ __email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
 import animals
 
 
-def test_biocycle():
+def test_biocycle_herb():
     herbivore = animals.Herbivore()
     assert herbivore.age == 0
     herbivore.ages()
@@ -18,6 +18,9 @@ def test_biocycle():
     w_before = herbivore.weight
     herbivore.weightloss()
     assert herbivore.weight < w_before
+
+
+
 
 
 def test_fitness():

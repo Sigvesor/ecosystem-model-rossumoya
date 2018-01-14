@@ -17,7 +17,7 @@ class Population:
             number of Herbivore populations
         """
 
-        self.pops = [Jungle(n_num_herbs) for _ in range(n_pops)]
+        self.pops = [Savannah(n_num_herbs) for _ in range(n_pops)]
 
     def cycle(self):
         """Update all populations by one cycle."""
@@ -26,9 +26,11 @@ class Population:
 
             pop.fitness_sort()
             pop.eat_request()
+            pop.update_fitness()
             pop.reproduction()
             pop.aging()
             pop.weightloss()
+            pop.update_fitness()
             pop.death()
             pop.regenerate()
 

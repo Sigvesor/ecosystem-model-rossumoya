@@ -74,7 +74,7 @@ def test_death():
     assert len(the_jungle.pop_herbs) < 1000
 
 
-def test_regenerate():
+def test_regenerate_jungle():
     the_jungle = Jungle(1)
     f0 = the_jungle.f
     the_jungle.eat_request()
@@ -82,3 +82,15 @@ def test_regenerate():
     assert f1 < f0
     the_jungle.regenerate()
     assert the_jungle.f == the_jungle.default_params['f_max']
+
+
+def test_regenerate_savannah():
+    Savannah.set_params({'f_max': 300})
+    the_savannah = Savannah(1)
+    f0 = the_savannah.f
+    the_savannah.eat_request()
+    f1 = the_savannah.f
+    assert f1 < f0
+    the_savannah.f = 0
+    the_savannah.regenerate()
+    assert the_savannah.f < the_savannah.default_params['f_max']
