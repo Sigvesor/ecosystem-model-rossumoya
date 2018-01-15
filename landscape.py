@@ -88,7 +88,7 @@ class Landscape:
             babies = []
             for herb in pop:
                 if herb.birth(len(pop)):
-                    herb.weight -= 8 * herb.default_params['xi'] # her burde vi koble til vekta til barnet..
+                    herb.weight -= herb.default_params['w_birth'] * herb.default_params['xi'] # her burde vi koble til vekta til barnet..
                     babies.append(Herbivore())
                 return babies
             # return [Herbivore() for herb in pop if herb.birth(len(pop))]
