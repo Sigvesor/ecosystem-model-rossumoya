@@ -5,6 +5,7 @@ __email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
 
 from animals import Herbivore
 
+
 # class Landscape
 class Landscape:
     """A jungle containing Herbivoars"""
@@ -92,7 +93,10 @@ class Landscape:
                 return babies
             # return [Herbivore() for herb in pop if herb.birth(len(pop))]
 
-        self.pop_herbs.extend(newborns(self.pop_herbs))
+        try:
+            self.pop_herbs.extend(newborns(self.pop_herbs))
+        except Exception:
+            pass
 
     def weightloss(self):
         for herb in self.pop_herbs:
@@ -144,6 +148,12 @@ class Savannah(Landscape):
 
     #f_max = default_params['f_max']
     #alpha = default_params['alpha']
+
+
+class Desert(Landscape):
+
+    default_params = {'f_max': 0.0}
+
 
 
 
