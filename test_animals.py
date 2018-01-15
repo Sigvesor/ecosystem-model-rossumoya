@@ -4,53 +4,65 @@ __author__ = 'Sigve Sorensen', 'Filip Rotnes'
 __email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
 
 
-import animals
+from animals import *
 
 
-def test_biocycle_herb():
-    herbivore = animals.Herbivore()
+def test_biocycle_herbivore():
+    herbivore = Herbivore()
     assert herbivore.age == 0
     herbivore.ages()
-    w_before = herbivore.weight
+    w0 = herbivore.weight
     herbivore.eating(100)
-    assert herbivore.weight > w_before
+    assert herbivore.weight > w0
     assert herbivore.age == 1
-    w_before = herbivore.weight
+    w0 = herbivore.weight
     herbivore.weightloss()
-    assert herbivore.weight < w_before
+    assert herbivore.weight < w0
 
 
-
+def test_biocycle_carnivore():
+    carnivore = Carnivore()
+    assert carnivore.age == 0
+    carnivore.ages()
+    w0 = carnivore.weight
+    carnivore.eating(100)
+    assert carnivore.weight > w0
+    assert carnivore.age == 1
+    w0 = carnivore.weight
+    carnivore.weightloss()
+    assert carnivore.weight < w0
 
 
 def test_fitness():
-    herbivore = animals.Herbivore()
-    herbivore.fitness()
-    fit1 = herbivore.phi
+    anim = Animal()
+    anim.fitness()
+    fit1 = anim.phi
     assert 0 <= fit1 <= 1
-    herbivore.ages()
-    herbivore.fitness()
-    fit2 = herbivore.phi
+    anim.ages()
+    anim.fitness()
+    fit2 = anim.phi
     assert fit1 > fit2
-    herbivore.weightloss()
-    herbivore.fitness()
-    fit3 = herbivore.phi
+    anim.weightloss()
+    anim.fitness()
+    fit3 = anim.phi
     assert fit2 > fit3
 
 
 def test_birth():
-    herbivore = animals.Herbivore()
-    herbivore.fitness()
-    assert not herbivore.birth(1)
-    assert herbivore.birth(100000)
+    Animal.set_params({'zeta': 0.0})
+    anim = Animal()
+    anim.fitness()
+    assert not anim.birth(1)
+    assert anim.birth(10000000)
 
 
 def test_death():
-    herbivore = animals.Herbivore()
-    herbivore.default_params['omega'] = 1
-    herbivore.phi = 0
-    assert herbivore.dies()
-    herbivore.phi = 1
-    assert not herbivore.dies()
+    anim = Animal()
+    anim.default_params['omega'] = 1
+    anim.phi = 0
+    assert anim.dies()
+    anim.phi = 1
+    assert not anim.dies()
+
 
 
