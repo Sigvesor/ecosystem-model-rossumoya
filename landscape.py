@@ -6,11 +6,8 @@ __email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
 from animals import *
 
 
-# class Landscape
 class Landscape:
     """A jungle containing Herbivoars"""
-
-    #f_max = 0
 
     default_params = {'f_max': 0}
 
@@ -75,14 +72,21 @@ class Landscape:
     def aging(self):
         """Age all animals in Jungle by one cycle."""
 
-        for herb in self.pop_herbs:
-            herb.ages()
-
-        for carn in self.pop_carns:
-            carn.ages()
+        for species in self.pop_animals:
+            for animal in species:
+                animal.ages()
 
     def death(self):
         """Remove dying Herbivores and Carnivores."""
+
+        for species in self.pop_animals:
+            i = 0
+            while i < len(species):
+                if species[i].dies():
+                    species.pop(i)
+                else:
+                    i += 1
+
 
         def survivors(pop):
             return [animal for animal in pop if not animal.dies()]
@@ -91,47 +95,28 @@ class Landscape:
         self.pop_carns = survivors(self.pop_carns)
 
     def reproduction(self):
-        """For each Herbivore reproducing, add one new."""
+        """For each Animal reproducing, add one new."""
 
-        def newborns(pop):
-            babies = []
-
-            for animal in pop:
-                if animal.birth(len(pop)):
+        for species in self.pop_animals:
+            newborn_animals = []
+            for animal in species:
+                if animal.birth(len(species)):
                     animal.weight -= animal.default_params['w_birth'] * animal.default_params['xi']
                     if type(animal) == Herbivore:
-                        babies.append(Herbivore())
+                        newborn_animals.append(Herbivore())
                     elif type(animal) == Carnivore:
-                        babies.append(Carnivore())
-                return babies
-
-        try:
-            self.pop_carns.extend(newborns(self.pop_carns))
-            self.pop_herbs.extend(newborns(self.pop_herbs))
-        except Exception:
-            pass
+                        newborn_animals.append(Carnivore())
+            species.extend(newborn_animals)
 
     def weightloss(self):
         for species in self.pop_animals:
             for animal in species:
                 animal.weightloss()
 
-        #for herb in self.pop_herbs:
-        #    herb.weightloss()
-        #
-        #for carn in self.pop_carns:
-        #    carn.weightloss()#
-
     def update_fitness(self):
         for species in self.pop_animals:
             for animal in species:
                 animal.fitness()
-
-        #for herb in self.pop_herbs:
-        #    herb.fitness()
-        #
-        #for carn in self.pop_carns:
-        #    carn.fitness()
 
     def fitness_sort(self):
         desc = False
@@ -157,11 +142,11 @@ class Landscape:
         for carn in self.pop_animals[1]:
             request = carn.default_params['F']
             w_0 = carn.weight
-            i = 0
+            i = 1
             herb_yard = []
-            while carn.weight - w_0 < request:
-                herb = self.pop_animals[0][i]
-                if carn.phi <= herb:
+            while carn.weight - w_0 < request and i < len(self.pop_animals[0]):
+                herb = self.pop_animals[0][len(self.pop_animals) - i]
+                if carn.phi <= herb.phi:
                     p = 0
                 elif 0 < carn.phi - herb.phi < carn.default_params['DeltaPhiMax']:
                     p = (carn.phi - herb.phi) / carn.default_params['DeltaPhiMax']
@@ -169,14 +154,9 @@ class Landscape:
                     p = 1
                 if random.random() < p:
                     carn.weight += carn.default_params['beta'] * herb.weight
-                    #herb_yard.append(i)
-                    self.pop_animals[0].pop(herb)
+                    self.pop_animals[0].pop(len(self.pop_animals) - i)
                 else:
                     i += 1
-
-                #i += 1
-            #[self.pop_animals[0].pop(pos) for pos in herb_yard]
-
 
     def regenerate(self):
         if self.f != self.default_params['f_max']:
@@ -185,20 +165,18 @@ class Landscape:
             elif type(self) == Savannah:
                 self.f += self.default_params['alpha'] * (self.default_params['f_max'] - self.f)
 
+    def migrate(self):
+        pass
+
 
 class Jungle(Landscape):
 
     default_params = {'f_max': 800.0}
 
-    #f_max = default_params['f_max']
-
 
 class Savannah(Landscape):
 
     default_params = {'f_max': 300.0, 'alpha': 0.3}
-
-    #f_max = default_params['f_max']
-    #alpha = default_params['alpha']
 
 
 class Desert(Landscape):
