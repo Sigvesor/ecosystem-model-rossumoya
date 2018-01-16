@@ -9,7 +9,7 @@ from landscape import *
 class Population:
     """A population with many jungles"""
 
-    def __init__(self, n_pops=1, n_num_herbs=10):
+    def __init__(self, n_pops=1, n_num_herbs=10, n_num_carns=2):
         """
         Parameters:
         ----------
@@ -17,13 +17,13 @@ class Population:
             number of Herbivore populations
         """
 
-        self.pops = [Savannah(n_num_herbs) for _ in range(n_pops)]
+
+
+        self.pops = [Jungle(n_num_herbs, n_num_carns) for _ in range(n_pops)]
 
     def cycle(self):
         """Update all populations by one cycle."""
-
         for pop in self.pops:
-
             pop.fitness_sort()
             pop.eat_request()
             pop.update_fitness()
@@ -34,7 +34,7 @@ class Population:
             pop.death()
             pop.regenerate()
 
-            return len(pop.pop_herbs)
+            return (len(pop.pop_animals[0]),len(pop.pop_animals[1]))
 
 
 

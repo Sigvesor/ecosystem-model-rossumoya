@@ -62,10 +62,11 @@ class Animal:
 
     def __init__(self, weight=default_params['w_birth'], age=0.0):
         """Create Animal with age 0."""
-        self.weight = weight
+        self.weight = random.normalvariate(weight, self.default_params['sigma_birth']) #+ 40
         self.age = age
         self.phi = 1 / (1 + e(self.default_params['phi_age'] * (self.age - self.default_params['a_half']))) \
             * 1 / (1 + e(-self.default_params['phi_weight'] * (self.weight - self.default_params['w_half'])))
+        self.position = ...
 
     def ages(self):
         """Animal ages by one cycle."""
@@ -97,7 +98,7 @@ class Animal:
             * 1 / (1+e(-self.default_params['phi_weight']*(self.weight - self.default_params['w_half'])))
         return self.phi
 
-    def birth(self, pop_herbs):
+    def birth(self, n_animals):
         """
         Decide whether a Animal will give birth.
 
@@ -112,7 +113,8 @@ class Animal:
             p_of_birth = 0
         else:
             p_of_birth = min([1, self.default_params['gamma'] * self.phi *
-                              (pop_herbs - 1)])
+                              (n_animals - 1)])
+
         reproduction_successful = random.random() <= p_of_birth
         return reproduction_successful
 
@@ -131,6 +133,12 @@ class Herbivore(Animal):
                       'gamma': 0.2, 'zeta': 3.5, 'xi': 1.2,
                       'omega': 0.4, 'F': 10.0, 'eta': 0.05}
 
+    def __init__(self, weight=None, age=0):
+        """Create Animal with age 0."""
+        if weight is None:
+            weight = self.default_params['w_birth']
+        Animal.__init__(self, weight=weight, age=age)
+
     def eating(self, available_fodder):
         """
         Updates the weight of Herbivore after eating.
@@ -146,6 +154,12 @@ class Carnivore(Animal):
                       'phi_weight': 0.4, 'mu': 0.4, 'lambda': 1.0,
                       'gamma': 0.8, 'zeta': 3.5, 'xi': 1.1,
                       'omega': 0.9, 'F': 50.0, 'eta': 0.0125, 'DeltaPhiMax': 10.0}
+
+    def __init__(self, weight=None, age=0):
+        """Create Animal with age 0."""
+        if weight is None:
+            weight = self.default_params['w_birth']
+        Animal.__init__(self, weight=weight, age=age)
 
     def eating(self, available_meat):
         """
