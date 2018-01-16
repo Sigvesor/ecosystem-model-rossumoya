@@ -169,9 +169,13 @@ class Landscape:
                     p = 1
                 if random.random() < p:
                     carn.weight += carn.default_params['beta'] * herb.weight
-                    herb_yard.append(i)
-                i += 1
-            [self.pop_animals[0].pop(pos) for pos in herb_yard]
+                    #herb_yard.append(i)
+                    self.pop_animals[0].pop(herb)
+                else:
+                    i += 1
+
+                #i += 1
+            #[self.pop_animals[0].pop(pos) for pos in herb_yard]
 
 
     def regenerate(self):
