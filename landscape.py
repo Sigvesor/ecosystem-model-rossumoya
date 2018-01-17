@@ -47,7 +47,7 @@ class Landscape:
 
         return {'f_max': cls.default_params['f_max']}
 
-    def __init__(self, num_herbs=0, num_carns=0):
+    def __init__(self): #, num_herbs=0, num_carns=0):
         """
         Parameters#
         ----------
@@ -55,9 +55,19 @@ class Landscape:
             number of Herbivores in the jungle.
         """
         self.f = self.default_params['f_max']
-        self.pop_herbs = [Herbivore() for _ in range(num_herbs)]
-        self.pop_carns = [Carnivore() for _ in range(num_carns)]
-        self.pop_animals = [self.pop_herbs, self.pop_carns]
+        #self.pop_herbs = [Herbivore() for _ in range(num_herbs)]
+        #self.pop_carns = [Carnivore() for _ in range(num_carns)]
+        #self.pop_animals = [self.pop_herbs, self.pop_carns]
+
+    def populate_cell(self, population=None):
+        for animal in population:
+            # spec
+            if animal['species'] == 'Herbivore':
+                self.pop_animals[0].append(Herbivore(weight=animal['weight'],
+                                                     age=animal['age']))
+            elif animal['species'] == 'Carnivore':
+                self.pop_animals[1].append(Carnivore(weight=animal['weight'],
+                                                     age=animal['age']))
 
     def get_num_herbs(self):
         """Return number of animals in landscape"""
@@ -185,17 +195,4 @@ class Desert(Landscape):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-# class Savannah
+        # class Savannah
