@@ -6,17 +6,45 @@ __email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
 from simulation import *
 import animals
 import island
+import pytest
 
+@pytest.fixture(autouse=True)
+def simulation_environment():
+    island_map = """OOO
+    OJO
+    OOO"""
+    ini_pop = [{'loc':(1,1),
+                   'pop': [{'species': 'Herbivore', 'age': 4, 'weight': 15}
+                           for i in range(10)]}]
+    sim = island_map,ini_pop,1234
+    return island_map, ini_pop
 
-def test_init():
-    sim = BioSim([{'species': 'Herbivore', 'age': 4, 'weight': 15}])
-    assert len(sim.herbs) == 1
-    assert type(sim.herbs[0]) == animals.Herbivore
+#def test_init():
+#    sim = BioSim([{'species': 'Herbivore', 'age': 4, 'weight': 15}])
+#    assert len(sim.herbs) == 1
+#    assert type(sim.herbs[0]) == animals.Herbivore
 
+def test_environment():
+    island_map = """OOO
+        OJO
+        OOO"""
+    ini_pop = [{'loc': (1, 1),
+                'pop': [{'species': 'Herbivore', 'age': 4, 'weight': 15}
+                        for i in range(10)]}]
+    cell = BioSim(island_map, ini_pop, 1234).island.map[(1,1)]
+    assert type(cell) == Jungle
 
 def test_simulate():
-    sim = BioSim([{'species': 'Herbivore', 'age':4, 'weight':15}])
-    pass
+    island_map = """OOO
+        OJO
+        OOO"""
+    ini_pop = [{'loc': (1, 1),
+                'pop': [{'species': 'Herbivore', 'age': 4, 'weight': 15}
+                        for i in range(10)]}]
+    short_sim = BioSim(island_map, ini_pop, 1234).simulate(5)
+    assert type(short_sim) == list
+    assert type(short_sim[0]) == list
+    assert type(short_sim[0][0]) == list
 
 
 def test_map_construction():
@@ -40,23 +68,23 @@ def test_animal_placement():
     pass
 
 
-def test_eating():
-    """
-    the animal is eating if fodder in cell. the fodder of the cell is reduced,
-    weight of animal increased.
-    """
-    sim = BioSim([{'species': 'Herbivore', 'age': 4, 'weight': 15}])
-    w0 = sim.herbs[0].w
-    f0 = sim.map.f
-    sim.herbs[0].eating(sim.map.eat_request(sim.herbs[0].param['F']))
-    w1 = sim.herbs[0].w
-    f1 = sim.map.f
-    assert w1 > w0
-    assert f0 - f1 == 10
-    sim.map.f = 8
-    sim.herbs[0].eating(sim.map.eat_request(sim.herbs[0].param['F']))
-    assert sim.map.f == 0
-    assert sim.map.eat_request(sim.herbs[0].param['F']) == 0
+#def test_eating():
+#    """
+#    the animal is eating if fodder in cell. the fodder of the cell is reduced,
+#    weight of animal increased.
+#    """
+#    sim = BioSim([{'species': 'Herbivore', 'age': 4, 'weight': 15}])
+#    w0 = sim.herbs[0].w
+#    f0 = sim.map.f
+#    sim.herbs[0].eating(sim.map.eat_request(sim.herbs[0].param['F']))
+#    w1 = sim.herbs[0].w
+#    f1 = sim.map.f
+#    assert w1 > w0
+#    assert f0 - f1 == 10
+#    sim.map.f = 8
+#    sim.herbs[0].eating(sim.map.eat_request(sim.herbs[0].param['F']))
+#    assert sim.map.f == 0
+#    assert sim.map.eat_request(sim.herbs[0].param['F']) == 0
 
 
 def test_eating_order():
