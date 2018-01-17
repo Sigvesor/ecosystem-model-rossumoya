@@ -7,15 +7,17 @@ from landscape import *
 from animals import *
 from island import *
 import matplotlib.pyplot as plt
+import timeit
 
 
 class BioSim:
 
-    def __init__(self, ini_pop):
+    def __init__(self, island_map, ini_pop, seed):
+        random.seed(seed)
         self.ini_pop = ini_pop
-        self.sim = Population(n_num_herbs=ini_pop)
+        self.sim = Island(island_map, ini_pop)
 
-    def simulate(self, num_steps):
+    def simulate(self, num_steps, vis_steps=None, img_steps=None):
 
         herb_list = [self.ini_pop]
         carn_list = [2]
@@ -31,7 +33,7 @@ class BioSim:
 
 if __name__ == "__main__":
     #Savannah.set_params({'f_max': 300})
-
+    t0 = timeit.default_timer()
 
     #Carnivore.set_params({'})
     sim = BioSim(100)
@@ -43,4 +45,5 @@ if __name__ == "__main__":
     simulation = sim.simulate(300)
     plt.plot(range(301), simulation[0], 'r--', range(301), simulation[1], 'b-')
     #plt.hist([sim.sim.pops[0].pop_herbs[i].age for i in range(len(sim.sim.pops[0].pop_herbs))])
+    print(timeit.default_timer() - t0)
     plt.show()
