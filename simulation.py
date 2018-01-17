@@ -15,7 +15,8 @@ class BioSim:
     def __init__(self, island_map, ini_pop, seed):
         random.seed(seed)
         self.ini_pop = ini_pop
-        self.sim = Island(island_map, ini_pop)
+        self.island = Island()
+        self.island.populated_island(island_map, ini_pop)
 
     def simulate(self, num_steps, vis_steps=None, img_steps=None):
 
@@ -23,7 +24,7 @@ class BioSim:
         carn_list = [2]
 
         for step in range(num_steps):
-            sim_cyc = self.sim.cycle()
+            sim_cyc = self.island.cycle()
             herb_list.append(sim_cyc[0])
             carn_list.append(sim_cyc[1])
         print(herb_list)

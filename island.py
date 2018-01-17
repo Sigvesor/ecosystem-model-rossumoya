@@ -30,18 +30,22 @@ class Island:
 
     def cycle(self):
         """Update all populations by one cycle."""
-        for pop in self.pops:
-            pop.fitness_sort()
-            pop.eat_request()
-            pop.update_fitness()
-            pop.reproduction()
-            pop.aging()
-            pop.weightloss()
-            pop.update_fitness()
-            pop.death()
-            pop.regenerate()
+        for row in self.map:
+            for cell in row:
+                cell.fitness_sort()
+                cell.eat_request()
+                cell.update_fitness()
+                cell.reproduction()
+                cell.aging()
+                cell.weightloss()
+                cell.update_fitness()
+                cell.death()
+                cell.regenerate()
 
-            return (len(pop.pop_animals[0]),len(pop.pop_animals[1]))
+        #for pop in self.pops:
+
+
+            return (len(cell.pop_animals[0]),len(cell.pop_animals[1]))
 
 
     def map_from_string(self, map_str=None):
@@ -63,7 +67,7 @@ class Island:
         else:
             map = map_str
         map = map.replace(" ","").splitlines()
-        island_map = np.empty((len(map[0]),len(map)), dtype=object)
+        island_map = np.empty((len(map),len(map[0])), dtype=object)
         for index, line in enumerate(map):
             for idx, cell in enumerate(line):
                 if cell == 'O':
@@ -76,8 +80,6 @@ class Island:
                     island_map[idx, index] = Desert()
                 elif cell == 'M':
                     island_map[idx, index] = Mountain()
-
-
         return island_map
 
     def distribute_animals(self, ini_pop=None):
@@ -90,7 +92,7 @@ class Island:
         else:
             population = ini_pop
         for dictionary in population:
-            self.map[dictionary['loc']].populate_cell(population['pop'])
+            self.map[dictionary['loc']].populate_cell(dictionary['pop'])
 
     def populated_island(self, map=None, ini_pop=None):
         self.map = self.map_from_string(map)
