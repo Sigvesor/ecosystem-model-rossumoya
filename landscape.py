@@ -55,13 +55,11 @@ class Landscape:
             number of Herbivores in the jungle.
         """
         self.f = self.default_params['f_max']
-        #self.pop_herbs = [Herbivore() for _ in range(num_herbs)]
-        #self.pop_carns = [Carnivore() for _ in range(num_carns)]
-        #self.pop_animals = [self.pop_herbs, self.pop_carns]
+        self.pop_animals = [[], []]
 
     def populate_cell(self, population=None):
         for animal in population:
-            # spec
+
             if animal['species'] == 'Herbivore':
                 self.pop_animals[0].append(Herbivore(weight=animal['weight'],
                                                      age=animal['age']))
@@ -72,12 +70,12 @@ class Landscape:
     def get_num_herbs(self):
         """Return number of animals in landscape"""
 
-        return len(self.pop_herbs)
+        return len(self.pop_animals[0])
 
     def get_num_carns(self):
         """Return number of Carnivores in landscape"""
 
-        return len(self.pop_carns)
+        return len(self.pop_animals[1])
 
     def aging(self):
         """Age all animals in Jungle by one cycle."""
@@ -89,20 +87,11 @@ class Landscape:
     def death(self):
         """Remove dying Herbivores and Carnivores."""
 
-        for species in self.pop_animals:
-            i = 0
-            while i < len(species):
-                if species[i].dies():
-                    species.pop(i)
-                else:
-                    i += 1
-
-
         def survivors(pop):
             return [animal for animal in pop if not animal.dies()]
 
-        self.pop_herbs = survivors(self.pop_herbs)
-        self.pop_carns = survivors(self.pop_carns)
+        self.pop_animals[0] = survivors(self.pop_animals[0])
+        self.pop_animals[1] = survivors(self.pop_animals[1])
 
     def reproduction(self):
         """For each Animal reproducing, add one new."""
@@ -153,7 +142,6 @@ class Landscape:
             request = carn.default_params['F']
             w_0 = carn.weight
             i = 1
-            herb_yard = []
             while carn.weight - w_0 < request and i < len(self.pop_animals[0]):
                 herb = self.pop_animals[0][len(self.pop_animals) - i]
                 if carn.phi <= herb.phi:
@@ -194,5 +182,11 @@ class Desert(Landscape):
     default_params = {'f_max': 0.0}
 
 
+class Ocean(Landscape):
 
-        # class Savannah
+    default_params = {'f_max': 0.0}
+
+
+class Mountain(Landscape):
+
+    default_params = {'f_max': 0.0}
