@@ -6,11 +6,6 @@ __email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
 from landscape import *
 import numpy as np
 
-standard_map = """OOO
-OJO
-OOO"""
-
-
 class Island:
     """A population with many jungles"""
 
@@ -68,18 +63,18 @@ class Island:
             map = map_str
         map = map.replace(" ","").splitlines()
         island_map = np.empty((len(map),len(map[0])), dtype=object)
-        for index, line in enumerate(map):
-            for idx, cell in enumerate(line):
+        for x, line in enumerate(map):
+            for y, cell in enumerate(line):
                 if cell == 'O':
-                    island_map[idx,index] = Ocean()
+                    island_map[x, y] = Ocean()
                 elif cell == 'J':
-                    island_map[idx, index] = Jungle()
+                    island_map[x, y] = Jungle()
                 elif cell == 'S':
-                    island_map[idx, index] = Savannah()
+                    island_map[x, y] = Savannah()
                 elif cell == 'D':
-                    island_map[idx, index] = Desert()
+                    island_map[x, y] = Desert()
                 elif cell == 'M':
-                    island_map[idx, index] = Mountain()
+                    island_map[x, y] = Mountain()
         return island_map
 
     def distribute_animals(self, ini_pop=None):
