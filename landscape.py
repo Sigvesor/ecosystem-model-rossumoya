@@ -67,15 +67,23 @@ class Landscape:
                 self.pop_animals[1].append(Carnivore(weight=animal['weight'],
                                                      age=animal['age']))
 
-    def get_num_herbs(self):
-        """Return number of animals in landscape"""
+    @property
+    def num_herbs(self):
+        """Return number of Herbivore in landscape"""
 
         return len(self.pop_animals[0])
 
-    def get_num_carns(self):
-        """Return number of Carnivores in landscape"""
+    @property
+    def num_carns(self):
+        """Return number of Carnivore in landscape"""
 
         return len(self.pop_animals[1])
+
+    @property
+    def sum_herb_mass(self):
+        """Return the sum of the Herbivore weights in the landscape"""
+
+        return sum([herb.weight for herb in self.pop_animals[0]])
 
     def aging(self):
         """Age all animals in Jungle by one cycle."""
@@ -162,6 +170,16 @@ class Landscape:
                 self.f = self.default_params['f_max']
             elif type(self) == Savannah:
                 self.f += self.default_params['alpha'] * (self.default_params['f_max'] - self.f)
+
+    @property
+    def abundance_fodder_herb(self):
+
+        return self.f / (self.num_herbs + 1) * Herbivore.default_params['F']
+
+    @property
+    def abundance_fodder_carn(self):
+
+        return self.sum_herb_mass / (self.num_carns + 1) * Carnivore.default_params['F']
 
     def migrate(self):
         pass
