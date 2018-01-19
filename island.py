@@ -18,7 +18,7 @@ class Island:
         n_pops : int
             number of Herbivore populations
         """
-        self.map = np.array(None)
+        self.map = None
 
 
         #self.pops = [Jungle(n_num_herbs, n_num_carns) for _ in range(n_pops)]
@@ -42,8 +42,8 @@ class Island:
 
             return (len(cell.pop_animals[0]),len(cell.pop_animals[1]))
 
-
     def map_from_string(self, map_str=None):
+
         standard_map = """OOOOOOOOOOOOOOOOOOOOO
         OOOOOOOOSMMMMJJJJJJJO
         OSSSSSJJJJMMJJJJJJJOO
@@ -58,24 +58,24 @@ class Island:
         OOOSSSSJJJJJJJOOOOOOO
         OOOOOOOOOOOOOOOOOOOOO"""
         if not map_str:
-            map = standard_map
+            island_map = standard_map
         else:
-            map = map_str
-        map = map.replace(" ","").splitlines()
-        island_map = np.empty((len(map),len(map[0])), dtype=object)
-        for x, line in enumerate(map):
+            island_map = map_str
+        island_map = island_map.replace(" ","").splitlines()
+        self.map = np.empty((len(island_map),len(island_map[0])), dtype=object)
+        for x, line in enumerate(island_map):
             for y, cell in enumerate(line):
                 if cell == 'O':
-                    island_map[x, y] = Ocean()
+                    self.map[x, y] = Ocean()
                 elif cell == 'J':
-                    island_map[x, y] = Jungle()
+                    self.map[x, y] = Jungle()
                 elif cell == 'S':
-                    island_map[x, y] = Savannah()
+                    self.map[x, y] = Savannah()
                 elif cell == 'D':
-                    island_map[x, y] = Desert()
+                    self.map[x, y] = Desert()
                 elif cell == 'M':
-                    island_map[x, y] = Mountain()
-        return island_map
+                    self.map[x, y] = Mountain()
+        return self.map
 
     def distribute_animals(self, ini_pop=None):
         standard_pop = [{'loc': (1, 1), 'pop':
@@ -88,6 +88,20 @@ class Island:
             population = ini_pop
         for dictionary in population:
             self.map[dictionary['loc']].populate_cell(dictionary['pop'])
+
+    def get_all_animals(self):
+
+        array_list = self.map_from_string().tolist()
+        obj_list = [j for i in array_list for j in i]
+
+        herbs = [obj.pop_animals[0] for obj in obj_list]
+        carns = [obj.pop_animals[1] for obj in obj_list]
+        joined_animals = herbs + carns
+
+        animals = [j for i in joined_animals for j in i]
+        random.shuffle(animals)
+
+        return animals
 
     def populated_island(self, map=None, ini_pop=None):
         self.map = self.map_from_string(map)
