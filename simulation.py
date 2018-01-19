@@ -19,17 +19,17 @@ class BioSim:
         self.island.populated_island(island_map, ini_pop)
 
     def simulate(self, num_steps, vis_steps=None, img_steps=None):
+        pass
+        #herb_list = [self.ini_pop]
+        #carn_list = [2]
 
-        herb_list = [self.ini_pop]
-        carn_list = [2]
-
-        for step in range(num_steps):
-            sim_cyc = self.island.cycle()
-            herb_list.append(sim_cyc[0])
-            carn_list.append(sim_cyc[1])
-        print(herb_list)
-        print(carn_list)
-        return [herb_list, carn_list]
+        #for step in range(num_steps):
+        #    sim_cyc = self.island.cycle()
+        #    herb_list.append(sim_cyc[0])
+        #    carn_list.append(sim_cyc[1])
+        #print(herb_list)
+        #print(carn_list)
+        #return [herb_list, carn_list]
 
 
 if __name__ == "__main__":
@@ -37,14 +37,31 @@ if __name__ == "__main__":
     t0 = timeit.default_timer()
 
     #Carnivore.set_params({'})
-    sim = BioSim(100)
+    kart = """OOOOOOOOOOOOOOOOOOOOO
+        OOOOOOOOSMMMMJJJJJJJO
+        OSSSSSJJJJMMJJJJJJJOO
+        OSSSSSSSSSMMJJJJJJOOO
+        OSSSSSJJJJJJJJJJJJOOO
+        OSSSSSJJJDDJJJSJJJOOO
+        OSSJJJJJDDDJJJSSSSOOO
+        OOSSSSJJJDDJJJSOOOOOO
+        OSSSJJJJJDDJJJJJJJOOO
+        OSSSSJJJJDDJJJJOOOOOO
+        OOOSSSSJJJJJJJOOOOOOO
+        OOOOOOOOOOOOOOOOOOOOO"""
+
+    ini_herbs = [{'loc': (10, 10), 'pop': [{'species': 'Herbivore', 'age': 5,
+    'weight': 20} for _ in range(150)]}]
+    ini_carns = [{'loc': (10, 10), 'pop': [{'species': 'Carnivore', 'age': 5,
+    'weight': 20} for _ in range(40)]}]
+    sim = BioSim(ini_pop=ini_herbs+ini_carns, island_map=kart, seed=1234)
     #[sim.sim.pops[0].pop_animals[0][i].weight = 40 for i in range(len(sim.sim.pops[0].pop_animals[0]))]
     #sim.simulate(15)
     #sim.sim.pops[0].f_max = 2
     #sim.simulate(100)
     #plt.hist([sim.sim.pops[0].pop_animals[0][i].weight for i in range(len(sim.sim.pops[0].pop_animals[0]))])
-    simulation = sim.simulate(300)
-    plt.plot(range(301), simulation[0], 'r--', range(301), simulation[1], 'b-')
-    #plt.hist([sim.sim.pops[0].pop_herbs[i].age for i in range(len(sim.sim.pops[0].pop_herbs))])
-    print(timeit.default_timer() - t0)
-    plt.show()
+    #simulation = sim.simulate(300)
+    #plt.plot(range(301), simulation[0], 'r--', range(301), simulation[1], 'b-')
+    ##plt.hist([sim.sim.pops[0].pop_herbs[i].age for i in range(len(sim.sim.pops[0].pop_herbs))])
+    #print(timeit.default_timer() - t0)
+    #plt.show()
