@@ -5,6 +5,7 @@ __email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
 
 from landscape import *
 from animals import *
+from simulation import *
 
 """
 PLAN for integrating savannah (and dessert):
@@ -118,3 +119,11 @@ def test_eat_request():
     the_jungle.eat_request()
     assert sum([herb.weight for herb in the_jungle.pop_animals[0]])/len(the_jungle.pop_animals[0]) > w0_herb
     assert sum([carn.weight for carn in the_jungle.pop_animals[1]]) > w0_carn
+
+def test_migration()
+    kart = """OOOO
+    OJJO
+    OOOO"""
+    population = [Herbivore() for i in range(100)]
+    sim = BioSim(island_map=kart, ini_pop=population, seed=1234)
+    sim.island.map[]
