@@ -89,6 +89,20 @@ class Island:
         for dictionary in population:
             self.map[dictionary['loc']].populate_cell(dictionary['pop'])
 
+    def get_all_animals(self):
+
+        array_list = self.map_from_string().tolist()
+        obj_list = [j for i in array_list for j in i]
+
+        herbs = [obj.pop_animals[0] for obj in obj_list]
+        carns = [obj.pop_animals[1] for obj in obj_list]
+        joined_animals = herbs + carns
+
+        animals = [j for i in joined_animals for j in i]
+        random.shuffle(animals)
+
+        return animals
+
     def populated_island(self, map=None, ini_pop=None):
         self.map = self.map_from_string(map)
         self.distribute_animals(ini_pop)
