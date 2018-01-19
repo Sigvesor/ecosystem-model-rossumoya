@@ -89,7 +89,7 @@ class Island:
         for dictionary in population:
             self.map[dictionary['loc']].populate_cell(dictionary['pop'])
 
-    def get_all_landscapes(self):
+    def get_random_landscapes(self):
 
         array_list = self.map_from_string().tolist()
         land_list = [j for i in array_list for j in i]
@@ -98,6 +98,30 @@ class Island:
 
         return land_list
 
+    def get_surrounding_landscapes(self, pos):
+
+        valid_moves = []
+        x, y = pos
+
+        if x + 1 < len(self.map):
+            valid_moves.append(self.map[x+1, y])
+        if x - 1 >= 0:
+            valid_moves.append(self.map[x-1, y])
+        if y + 1 < len(self.map[0]):
+            valid_moves.append(self.map[x, y+1])
+        if y - 1 >= 0:
+            valid_moves.append(self.map[x, y - 1])
+        return valid_moves
+
+    def migrate_island(self):
+
+        land_list = self.get_random_landscapes()
+
+        for land in land_list:
+            for row, col in np.where(self.map == land):
+                self.map[row, col].migrate(self.get_surrounding_landscapes((row, col)))
+
     def populated_island(self, map=None, ini_pop=None):
+
         self.map = self.map_from_string(map)
         self.distribute_animals(ini_pop)
