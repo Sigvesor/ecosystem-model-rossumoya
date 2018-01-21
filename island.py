@@ -28,20 +28,24 @@ class Island:
         """Update all populations by one cycle."""
         for row in self.map:
             for cell in row:
+
                 cell.fitness_sort()
                 cell.eat_request()
                 cell.update_fitness()
                 cell.reproduction()
+
+        self.migrate_island()
+
+        for row in self.map:
+            for cell in row:
+
                 cell.aging()
                 cell.weightloss()
                 cell.update_fitness()
                 cell.death()
                 cell.regenerate()
 
-        #for pop in self.pops:
-
-
-            return (len(cell.pop_animals[0]),len(cell.pop_animals[1]))
+        return self.total_island_population
 
     def map_from_string(self, map_str=None):
 
@@ -79,10 +83,13 @@ class Island:
         return self.map
 
     def distribute_animals(self, ini_pop=None):
-        standard_pop = [{'loc': (1, 1), 'pop':
-            [{'species': 'Herbivore', 'age': 5, 'weight': 30}]},
-                        {'loc': (1, 1), 'pop':
-                            [{'species': 'Carnivore', 'age': 5, 'weight': 30}]}]
+
+        ini_herbs = [{'loc': (10, 10), 'pop': [{'species': 'Herbivore', 'age': 5,
+                                                'weight': 20} for _ in range(150)]}]
+        ini_carns = [{'loc': (10, 10), 'pop': [{'species': 'Carnivore', 'age': 5,
+                                                'weight': 20} for _ in range(40)]}]
+        standard_pop = ini_herbs + ini_carns
+
         if not ini_pop:
             population = standard_pop
         else:
@@ -131,3 +138,20 @@ class Island:
 
         self.map = self.map_from_string(map)
         self.distribute_animals(ini_pop)
+
+    @property
+    def total_island_population(self):
+
+        total_pop_herbs = []
+        total_pop_carns = []
+
+        for row in self.map:
+            for cell in row:
+
+                total_pop_herbs.append(len(cell.pop_animals[0]))
+                total_pop_carns.append(len(cell.pop_animals[1]))
+
+        total_pop = (sum(total_pop_herbs), sum(total_pop_carns))
+
+        return total_pop
+
