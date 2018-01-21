@@ -10,7 +10,7 @@ class Landscape:
     """A jungle containing Herbivoars"""
 
     default_params = {'f_max': 0}
-    new_pop = [[], []]
+
     @classmethod
     def set_params(cls, new_params=default_params):
 
@@ -56,6 +56,7 @@ class Landscape:
         """
         self.f = self.default_params['f_max']
         self.pop_animals = [[], []]
+        self.new_pop = [[], []]
 
     def populate_cell(self, population=None):
         for animal in population:
@@ -182,18 +183,27 @@ class Landscape:
         return self.sum_herb_mass / (self.num_carns + 1) * Carnivore.default_params['F']
 
     def migrate(self, neighbours):
-        #for species in self.pop_animals:
-        for animal in self.pop_animals[0]:
-            if random.random() < animal.default_params['mu'] * animal.phi:
-                #p = [1/len(neighbours)]*len(neighbours)
-                # her kan vi regne ut driten
-                destination = neighbours[random.randint(0,len(neighbours)-1)]
-                destination.new_pop[0].append(animal)
-            else:
-                self.new_pop[0].append(animal)
-        self.pop_animals = self.new_pop
-        self.new_pop = [[],[]]
 
+        for species in self.pop_animals:
+            for animal in species:
+
+                if random.random() < animal.default_params['mu'] * animal.phi:
+
+                    destination = neighbours[random.randint(0, len(neighbours)-1)]
+
+                    if isinstance(animal, Herbivore):
+                        destination.new_pop[0].append(animal)
+                    elif isinstance(animal, Carnivore):
+                        destination.new_pop[1].append(animal)
+
+                else:
+                    if isinstance(animal, Herbivore):
+                        self.new_pop[0].append(animal)
+                    elif isinstance(animal, Carnivore):
+                        self.new_pop[1].append(animal)
+
+        self.pop_animals = self.new_pop
+        self.new_pop = [[], []]
 
 
 class Jungle(Landscape):
