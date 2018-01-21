@@ -4,6 +4,7 @@ __author__ = 'Sigve Sorensen', 'Filip Rotnes'
 __email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
 
 from animals import *
+from math import exp as e
 
 
 class Landscape:
@@ -174,20 +175,43 @@ class Landscape:
 
     @property
     def abundance_fodder_herb(self):
-
-        return self.f / (self.num_herbs + 1) * Herbivore.default_params['F']
+        return self.f / ((self.num_herbs + 1) * Herbivore.default_params['F'])
 
     @property
     def abundance_fodder_carn(self):
 
-        return self.sum_herb_mass / (self.num_carns + 1) * Carnivore.default_params['F']
+        return self.sum_herb_mass / ((self.num_carns + 1) * Carnivore.default_params['F'])
+
+    def moving_propensity(self, animal, epsilon):
+        if isinstance(self, (Ocean, Mountain)):
+            return 0
+        else:
+            return e(animal.default_params['lambda'] * epsilon)
 
     def migrate(self, neighbours):
 
         for species in self.pop_animals:
             for animal in species:
                 if random.random() < animal.default_params['mu'] * animal.phi:
-                    destination = neighbours[random.randint(0, len(neighbours)-1)]
+                    ###### Finn destination! #####
+                    if  isinstance(animal, Herbivore):
+                        prop_list = [self.moving_propensity(animal=animal,
+                            epsilon=neighbour.abundance_fodder_herb)
+                            for neighbour in neighbours]
+                    elif isinstance(animal, Carnivore):
+                        prop_list = [self.moving_propensity(animal=animal,
+                            epsilon=neighbour.abundance_fodder_carn)
+                            for neighbour in neighbours]
+                    if sum(prop_list) == 0:
+                        break
+                    prob_list = [prop/sum(prop_list) for prop in prop_list]
+                    p = random.random()
+                    i = 0
+                    psum = 0
+                    while(p>psum):
+                        psum += prob_list[i]
+                        i += 1
+                    destination = neighbours[i-1]
 
                     if isinstance(animal, Herbivore):
                         destination.new_pop[0].append(animal)
