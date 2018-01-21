@@ -4,6 +4,7 @@ __author__ = 'Sigve Sorensen', 'Filip Rotnes'
 __email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
 
 from landscape import *
+from animals import *
 import numpy as np
 
 class Island:
@@ -91,7 +92,7 @@ class Island:
 
     def get_random_landscapes(self):
 
-        array_list = self.map_from_string().tolist()
+        array_list = self.map.tolist()
         land_list = [j for i in array_list for j in i]
 
         random.shuffle(land_list)
@@ -118,8 +119,13 @@ class Island:
         land_list = self.get_random_landscapes()
 
         for land in land_list:
-            for row, col in np.where(self.map == land):
-                self.map[row, col].migrate(self.get_surrounding_landscapes((row, col)))
+            coords = np.where(self.map == land)
+            self.map[coords[0][0], coords[1][0]].migrate(self.get_surrounding_landscapes([coords[0][0], coords[1][0]]))
+
+        for land in land_list:
+            coords = np.where(self.map == land)
+            self.map[coords[0][0], coords[1][0]].pop_animals = self.map[coords[0][0], coords[1][0]].new_pop
+            self.map[coords[0][0], coords[1][0]].new_pop = [[], []]
 
     def populated_island(self, map=None, ini_pop=None):
 

@@ -186,9 +186,7 @@ class Landscape:
 
         for species in self.pop_animals:
             for animal in species:
-
                 if random.random() < animal.default_params['mu'] * animal.phi:
-
                     destination = neighbours[random.randint(0, len(neighbours)-1)]
 
                     if isinstance(animal, Herbivore):
@@ -202,8 +200,7 @@ class Landscape:
                     elif isinstance(animal, Carnivore):
                         self.new_pop[1].append(animal)
 
-        self.pop_animals = self.new_pop
-        self.new_pop = [[], []]
+        self.pop_animals = [[], []]
 
 
 class Jungle(Landscape):
