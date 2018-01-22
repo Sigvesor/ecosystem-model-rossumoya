@@ -95,7 +95,7 @@ class Landscape:
                 animal.ages()
 
     def death(self):
-        """Remove dying Herbivores and Carnivores."""
+        """Removes dying animals."""
 
         def survivors(pop):
             return [animal for animal in pop if not animal.dies()]
@@ -111,9 +111,9 @@ class Landscape:
             for animal in species:
                 if animal.birth(len(species)):
                     animal.weight -= animal.default_params['w_birth'] * animal.default_params['xi']
-                    if type(animal) == Herbivore:
+                    if isinstance(animal, Herbivore):
                         newborn_animals.append(Herbivore())
-                    elif type(animal) == Carnivore:
+                    elif isinstance(animal, Carnivore):
                         newborn_animals.append(Carnivore())
             species.extend(newborn_animals)
 
@@ -160,17 +160,19 @@ class Landscape:
                     p = (carn.phi - herb.phi) / carn.default_params['DeltaPhiMax']
                 else:
                     p = 1
+
                 if random.random() < p:
-                    carn.weight += carn.default_params['beta'] * herb.weight
+                    carn.eating(herb.weight)
                     self.pop_animals[0].pop(len(self.pop_animals) - i)
+                    carn.fitness()
                 else:
                     i += 1
 
     def regenerate(self):
         if self.f != self.default_params['f_max']:
-            if type(self) == Jungle:
+            if isinstance(self, Jungle):
                 self.f = self.default_params['f_max']
-            elif type(self) == Savannah:
+            elif isinstance(self, Savannah):
                 self.f += self.default_params['alpha'] * (self.default_params['f_max'] - self.f)
 
     @property
