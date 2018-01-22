@@ -122,21 +122,34 @@ class Island:
             population = standard_pop
         else:
             population = ini_pop
+
         for dictionary in population:
-            cell = self.map[dictionary['loc']]
+            map_row = dictionary['loc'][0]
+            map_col = dictionary['loc'][1]
+
+            if not 0 < map_row <= self.map.shape[0]:
+                raise ValueError('x-coordinate out of bounds for loc: ' +
+                                 str((map_row, map_col)))
+
+            elif not 0 < map_col <= self.map.shape[1]:
+                raise ValueError('y-coordinate out of bounds for loc: ' +
+                                 str((map_row, map_col)))
+
+            cell = self.map[(map_row - 1, map_col - 1)]
 
             if isinstance(cell, (Mountain, Ocean)):
                 raise ValueError('Animals can not be placed in ' +
-                                 str(type(cell)) + '. Permitted landscapes: ' +
+                                 str(type(cell)) + '. Permitted landscapes: ' 
                                                    'Jungle, Savannah'
                                                    ' and Desert.')
             for animal in dictionary['pop']:
                 age, weight = animal['age'], animal['weight']
                 if not isinstance(age, int) or age < 0 or weight < 0:
-                    raise ValueError('Violated one of two conditions:\n' +
-                                     '1. Animal age has to be a non-negative' +
-                                     ' integer.\n2. Animal weight has to be' +
+                    raise ValueError('Violated one of two conditions:\n' 
+                                     '1. Animal age has to be a non-negative' 
+                                     ' integer.\n2. Animal weight has to be' 
                                      ' a non-negative number(float).')
+
             cell.populate_cell(dictionary['pop'])
 
     def get_random_landscapes(self):

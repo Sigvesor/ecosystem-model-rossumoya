@@ -34,20 +34,30 @@ class Animal:
         ValueError, KeyError
         """
 
-        params = ('w_birth', 'sigma_birth', 'beta', 'a_half',
-                  'phi_age', 'w_half', 'phi_weight', 'mu', 'lambda',
-                  'gamma', 'zeta', 'xi', 'omega', 'F', 'eta', 'DeltaPhiMax')
+        tuples = ('w_birth', 'w_half', 'a_half', 'gamma',
+                  'zeta', 'xi', 'F', 'DeltaPhiMax')
+
+        fractions = ('beta', 'eta', 'sigma_birth', 'phi_age', 'phi_weight',
+                     'mu', 'lambda', 'omega')
 
         for key in new_params:
-            if key not in params:
+            if key not in tuples and key not in fractions:
                 raise KeyError('Invalid parameter name: ' + key)
 
             else:
 
                 if not isinstance(new_params[key], (int, float)):
-                    raise ValueError('Invalid type of inserted key value. ' +
+                    raise ValueError('Invalid type of inserted key value. ' 
                                      'Expected {}'.format
                                      (type(cls.default_params[key])))
+
+                elif key in tuples and new_params[key] < 0:
+                    raise ValueError(str(key) + ' must have positive value.')
+
+                elif key in fractions and not (0 < new_params[key] < 1):
+                    raise ValueError(str(key) + ' must have value from ' 
+                                                '0 to 1.')
+
                 else:
                     cls.default_params[key] = new_params[key]
 
