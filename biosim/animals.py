@@ -10,11 +10,11 @@ from math import exp as e
 class Animal:
     """Animal which eat, age, mate, loose weight and die with probabilities."""
 
-    default_params = {'w_birth': 8.0, 'sigma_birth': 1.5, 'beta': 0.9,
-                      'a_half': 40, 'phi_age': 0.2, 'w_half': 10.0,
-                      'phi_weight': 0.1, 'mu': 0.25, 'lambda': 1.0,
-                      'gamma': 0.2, 'zeta': 3.5, 'xi': 1.2,
-                      'omega': 0.4, 'F': 10, 'eta': 0.05}
+    default_params = {'w_birth': None, 'sigma_birth': None, 'beta': None,
+                      'a_half': None, 'phi_age': None, 'w_half': None,
+                      'phi_weight': None, 'mu': None, 'lambda': None,
+                      'gamma': None, 'zeta': None, 'xi': None, 'omega': None,
+                      'F': None, 'eta': None, 'DeltaPhiMax': None}
 
     @classmethod
     def set_parameters(cls, new_params):
@@ -43,10 +43,13 @@ class Animal:
                 raise KeyError('Invalid parameter name: ' + key)
 
             else:
-                # if type(new_params[key]) is not type(cls.default_params[key]):
-                #    raise ValueError('Invalid type of inserted key value. Expected {}'.format(type(cls.default_params[key])))
-                # else:
-                cls.default_params[key] = new_params[key]
+
+                if not isinstance(new_params[key], (int, float)):
+                    raise ValueError('Invalid type of inserted key value. ' +
+                                     'Expected {}'.format
+                                     (type(cls.default_params[key])))
+                else:
+                    cls.default_params[key] = new_params[key]
 
     @classmethod
     def get_params(cls):
@@ -159,7 +162,7 @@ class Carnivore(Animal):    # test that will starve w/o herbs
                       'phi_weight': 0.4, 'mu': 0.4, 'lambda': 1.0,
                       'gamma': 0.8, 'zeta': 3.5, 'xi': 1.1,
                       'omega': 0.9, 'F': 50.0,
-                      'eta': 0.0125, 'DeltaPhiMax': 10.0}
+                      'eta': 0.125, 'DeltaPhiMax': 10.0}
 
     def __init__(self, weight=None, age=0):
         """Create Animal with age 0."""
