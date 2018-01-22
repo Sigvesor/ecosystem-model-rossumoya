@@ -11,13 +11,13 @@ class Animal:
     """Animal which eat, age, mate, loose weight and die with probabilities."""
 
     default_params = {'w_birth': 8.0, 'sigma_birth': 1.5, 'beta': 0.9,
-                      'a_half': 40.0, 'phi_age': 0.2, 'w_half': 10.0,
+                      'a_half': 40, 'phi_age': 0.2, 'w_half': 10.0,
                       'phi_weight': 0.1, 'mu': 0.25, 'lambda': 1.0,
                       'gamma': 0.2, 'zeta': 3.5, 'xi': 1.2,
-                      'omega': 0.4, 'F': 10.0, 'eta': 0.05}
+                      'omega': 0.4, 'F': 10, 'eta': 0.05}
 
     @classmethod
-    def set_params(cls, new_params):
+    def set_parameters(cls, new_params):
         """
         Set class parameters.
 
@@ -125,7 +125,9 @@ class Animal:
         self.weight -= self.default_params['eta'] * self.weight
 
 
-class Herbivore(Animal):
+
+
+class Herbivore(Animal): # test that will starve in desert
 
     default_params = {'w_birth': 8.0, 'sigma_birth': 1.5, 'beta': 0.9,
                       'a_half': 40.0, 'phi_age': 0.2, 'w_half': 10.0,
@@ -147,7 +149,7 @@ class Herbivore(Animal):
         self.weight += available_fodder * self.default_params['beta']
 
 
-class Carnivore(Animal):
+class Carnivore(Animal):    # test that will starve w/o herbs
 
     default_params = {'w_birth': 6.0, 'sigma_birth': 1.0, 'beta': 0.75,
                       'a_half': 60.0, 'phi_age': 0.4, 'w_half': 4.0,
