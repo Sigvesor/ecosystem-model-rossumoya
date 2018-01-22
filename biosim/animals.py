@@ -69,10 +69,9 @@ class Animal:
         self.weight = random.normalvariate(
             weight, self.default_params['sigma_birth'])  # + 40
         self.age = age
-        self.phi = 1 / (1 + e(self.default_params['phi_age'] *
-                              (self.age - self.default_params['a_half']))) \
-            * 1 / (1 + e(-self.default_params['phi_weight'] *
-                         (self.weight - self.default_params['w_half'])))
+        phi_exp = self.default_params['phi_age'] * \
+                  (self.age - self.default_params['a_half'])
+        self.phi = 1 / ((1 + e(phi_exp)) * (1 + e(- phi_exp)))
 
     def ages(self):
         """Animal ages by one cycle."""
@@ -100,10 +99,9 @@ class Animal:
         float
             Between [0, 1]
         """
-        self.phi = 1 / (1 + e(self.default_params['phi_age'] *
-                              (self.age - self.default_params['a_half'])))\
-            * 1 / (1 + e(-self.default_params['phi_weight'] *
-                         (self.weight - self.default_params['w_half'])))
+        phi_exp = self.default_params['phi_age'] * \
+                  (self.age - self.default_params['a_half'])
+        self.phi = 1 / ((1 + e(phi_exp)) * (1 + e(- phi_exp)))
         return self.phi
 
     def birth(self, n_animals):
