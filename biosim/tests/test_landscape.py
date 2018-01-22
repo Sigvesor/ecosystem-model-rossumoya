@@ -3,9 +3,7 @@
 __author__ = 'Sigve Sorensen', 'Filip Rotnes'
 __email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
 
-from landscape import *
-from animals import *
-from simulation import *
+from biosim.simulation import *
 
 """
 PLAN for integrating savannah (and dessert):

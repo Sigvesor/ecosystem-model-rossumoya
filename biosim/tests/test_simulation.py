@@ -3,10 +3,10 @@
 __author__ = 'Sigve Sorensen', 'Filip Rotnes'
 __email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
 
-from simulation import *
-import animals
-import island
 import pytest
+
+from biosim.simulation import *
+
 
 @pytest.fixture(autouse=True)
 def simulation_environment():

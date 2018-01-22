@@ -4,7 +4,7 @@ __author__ = 'Sigve Sorensen', 'Filip Rotnes'
 __email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
 
 
-from animals import *
+from biosim.animals import *
 
 
 def test_biocycle_herbivore():
