@@ -43,6 +43,23 @@ class Island:
 
         return self.total_island_population
 
+    def check_string_map(self, island_map):
+        map_error = ValueError('The edges of the maps has to be Ocean only! \n')
+
+        for end in [0, -1]:
+            for cell in island_map[end]:
+                if cell != 'O':
+                    raise map_error
+
+        for row in island_map[1:-1]:
+            invalid_ends = row.startswith('O') and row.endswith('O')
+            if invalid_ends:
+                raise map_error
+
+        row_lengths = [len(row) for row in island_map]
+        if max(row_lengths) != min(row_lengths):
+            raise ValueError('Each row in map must be of the same length! \n')
+
     def map_from_string(self, map_str=None):
 
         standard_map = """OOOOOOOOOOOOOOOOOOOOO
@@ -63,6 +80,9 @@ class Island:
         else:
             island_map = map_str
         island_map = island_map.replace(" ", "").splitlines()
+
+        self.check_string_map(island_map=island_map)
+
         self.map = np.empty(
             (len(island_map), len(island_map[0])), dtype=object)
         for x, line in enumerate(island_map):
