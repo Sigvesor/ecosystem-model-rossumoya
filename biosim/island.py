@@ -25,6 +25,7 @@ class Island:
         for row in self.map:
             for cell in row:
 
+                cell.regenerate()
                 cell.fitness_sort()
                 cell.eat_request()
                 cell.update_fitness()
@@ -39,7 +40,6 @@ class Island:
                 cell.weightloss()
                 cell.update_fitness()
                 cell.death()
-                cell.regenerate()
 
         return self.total_island_population
 
@@ -94,7 +94,21 @@ class Island:
         else:
             population = ini_pop
         for dictionary in population:
-            self.map[dictionary['loc']].populate_cell(dictionary['pop'])
+            cell = self.map[dictionary['loc']]
+
+            if isinstance(cell, (Mountain, Ocean)):
+                raise ValueError('Animals can not be placed in ' +
+                                 str(type(cell)) + '. Permitted landscapes: ' +
+                                                   'Jungle, Savannah'
+                                                   ' and Desert.')
+            for animal in dictionary['pop']:
+                age, weight = animal['age'], animal['weight']
+                if not isinstance(age, int) or age < 0 or weight < 0:
+                    raise ValueError('Violated one of two conditions:\n' +
+                                     '1. Animal age has to be a non-negative' +
+                                     ' integer.\n2. Animal weight has to be' +
+                                     ' a non-negative number(float).')
+            cell.populate_cell(dictionary['pop'])
 
     def get_random_landscapes(self):
 
@@ -126,14 +140,17 @@ class Island:
 
         for land in land_list:
             coords = np.where(self.map == land)
-            self.map[coords[0][0], coords[1][0]].migrate(
-                self.get_surrounding_landscapes([coords[0][0], coords[1][0]]))
+            x = coords[0][0]
+            y = coords[1][0]
+            self.map[x, y].migrate(
+                self.get_surrounding_landscapes([x, y]))
 
         for land in land_list:
             coords = np.where(self.map == land)
-            self.map[coords[0][0], coords[1][0]].pop_animals = \
-                self.map[coords[0][0], coords[1][0]].new_pop
-            self.map[coords[0][0], coords[1][0]].new_pop = [[], []]
+            x = coords[0][0]
+            y = coords[1][0]
+            self.map[x, y].pop_animals = self.map[x, y].new_pop
+            self.map[x, y].new_pop = [[], []]
 
     def populated_island(self, map=None, ini_pop=None):
 
