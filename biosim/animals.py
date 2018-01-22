@@ -42,10 +42,10 @@ class Animal:
                 raise KeyError('Invalid parameter name: ' + key)
 
             else:
-                if type(new_params[key]) is not type(cls.default_params[key]):
-                    raise ValueError('Invalid type of inserted key value. Expected {}'.format(type(cls.default_params[key])))
-                else:
-                    cls.default_params[key] = new_params[key]
+                #if type(new_params[key]) is not type(cls.default_params[key]):
+                #    raise ValueError('Invalid type of inserted key value. Expected {}'.format(type(cls.default_params[key])))
+                #else:
+                cls.default_params[key] = new_params[key]
 
     @classmethod
     def get_params(cls):
