@@ -12,8 +12,6 @@ class Island:
     """A population with many jungles"""
 
     def __init__(self):
-                 # island_map=standard_map, ini_pop=standard_pop):
-                 #n_pops=1, n_num_herbs=10, n_num_carns=2):
         """
         Parameters:
         ----------
@@ -21,9 +19,6 @@ class Island:
             number of Herbivore populations
         """
         self.map = None
-
-
-        #self.pops = [Jungle(n_num_herbs, n_num_carns) for _ in range(n_pops)]
 
     def cycle(self):
         """Update all populations by one cycle."""
@@ -67,8 +62,9 @@ class Island:
             island_map = standard_map
         else:
             island_map = map_str
-        island_map = island_map.replace(" ","").splitlines()
-        self.map = np.empty((len(island_map),len(island_map[0])), dtype=object)
+        island_map = island_map.replace(" ", "").splitlines()
+        self.map = np.empty(
+            (len(island_map), len(island_map[0])), dtype=object)
         for x, line in enumerate(island_map):
             for y, cell in enumerate(line):
                 if cell == 'O':
@@ -85,10 +81,12 @@ class Island:
 
     def distribute_animals(self, ini_pop=None):
 
-        ini_herbs = [{'loc': (10, 10), 'pop': [{'species': 'Herbivore', 'age': 5,
-                                                'weight': 20} for _ in range(150)]}]
-        ini_carns = [{'loc': (10, 10), 'pop': [{'species': 'Carnivore', 'age': 5,
-                                                'weight': 20} for _ in range(40)]}]
+        ini_herbs = [{'loc': (10, 10),
+                      'pop': [{'species': 'Herbivore', 'age': 5,
+                               'weight': 20} for _ in range(150)]}]
+        ini_carns = [{'loc': (10, 10),
+                      'pop': [{'species': 'Carnivore', 'age': 5,
+                               'weight': 20} for _ in range(40)]}]
         standard_pop = ini_herbs + ini_carns
 
         if not ini_pop:
@@ -113,11 +111,11 @@ class Island:
         x, y = pos
 
         if x + 1 < len(self.map):
-            valid_moves.append(self.map[x+1, y])
+            valid_moves.append(self.map[x + 1, y])
         if x - 1 >= 0:
-            valid_moves.append(self.map[x-1, y])
+            valid_moves.append(self.map[x - 1, y])
         if y + 1 < len(self.map[0]):
-            valid_moves.append(self.map[x, y+1])
+            valid_moves.append(self.map[x, y + 1])
         if y - 1 >= 0:
             valid_moves.append(self.map[x, y - 1])
         return valid_moves
@@ -128,11 +126,13 @@ class Island:
 
         for land in land_list:
             coords = np.where(self.map == land)
-            self.map[coords[0][0], coords[1][0]].migrate(self.get_surrounding_landscapes([coords[0][0], coords[1][0]]))
+            self.map[coords[0][0], coords[1][0]].migrate(
+                self.get_surrounding_landscapes([coords[0][0], coords[1][0]]))
 
         for land in land_list:
             coords = np.where(self.map == land)
-            self.map[coords[0][0], coords[1][0]].pop_animals = self.map[coords[0][0], coords[1][0]].new_pop
+            self.map[coords[0][0], coords[1][0]].pop_animals = \
+                self.map[coords[0][0], coords[1][0]].new_pop
             self.map[coords[0][0], coords[1][0]].new_pop = [[], []]
 
     def populated_island(self, map=None, ini_pop=None):
@@ -155,4 +155,3 @@ class Island:
         total_pop = (sum(total_pop_herbs), sum(total_pop_carns))
 
         return total_pop
-

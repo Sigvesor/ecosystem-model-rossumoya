@@ -26,7 +26,8 @@ class Animal:
         new_params : dict
             Legal keys: 'w_birth', 'sigma_birth', 'beta', 'a_half',
                         'phi_age', 'w_half', 'phi_weight', 'mu', 'lambda',
-                        'gamma', 'zeta', 'xi', 'omega', 'F', 'eta', 'DeltaPhiMax'.
+                        'gamma', 'zeta', 'xi', 'omega', 'F',
+                        'eta', 'DeltaPhiMax'.
 
         Raises
         ------
@@ -42,9 +43,9 @@ class Animal:
                 raise KeyError('Invalid parameter name: ' + key)
 
             else:
-                #if type(new_params[key]) is not type(cls.default_params[key]):
+                # if type(new_params[key]) is not type(cls.default_params[key]):
                 #    raise ValueError('Invalid type of inserted key value. Expected {}'.format(type(cls.default_params[key])))
-                #else:
+                # else:
                 cls.default_params[key] = new_params[key]
 
     @classmethod
@@ -62,11 +63,13 @@ class Animal:
 
     def __init__(self, weight=default_params['w_birth'], age=0.0):
         """Create Animal with age 0."""
-        self.weight = random.normalvariate(weight, self.default_params['sigma_birth']) #+ 40
+        self.weight = random.normalvariate(
+            weight, self.default_params['sigma_birth'])  # + 40
         self.age = age
-        self.phi = 1 / (1 + e(self.default_params['phi_age'] * (self.age - self.default_params['a_half']))) \
-            * 1 / (1 + e(-self.default_params['phi_weight'] * (self.weight - self.default_params['w_half'])))
-        self.position = ...
+        self.phi = 1 / (1 + e(self.default_params['phi_age'] *
+                              (self.age - self.default_params['a_half']))) \
+            * 1 / (1 + e(-self.default_params['phi_weight'] *
+                         (self.weight - self.default_params['w_half'])))
 
     def ages(self):
         """Animal ages by one cycle."""
@@ -94,8 +97,10 @@ class Animal:
         float
             Between [0, 1]
         """
-        self.phi = 1 / (1+e(self.default_params['phi_age']*(self.age - self.default_params['a_half'])))\
-            * 1 / (1+e(-self.default_params['phi_weight']*(self.weight - self.default_params['w_half'])))
+        self.phi = 1 / (1 + e(self.default_params['phi_age'] *
+                              (self.age - self.default_params['a_half'])))\
+            * 1 / (1 + e(-self.default_params['phi_weight'] *
+                         (self.weight - self.default_params['w_half'])))
         return self.phi
 
     def birth(self, n_animals):
@@ -125,9 +130,7 @@ class Animal:
         self.weight -= self.default_params['eta'] * self.weight
 
 
-
-
-class Herbivore(Animal): # test that will starve in desert
+class Herbivore(Animal):  # test that will starve in desert
 
     default_params = {'w_birth': 8.0, 'sigma_birth': 1.5, 'beta': 0.9,
                       'a_half': 40.0, 'phi_age': 0.2, 'w_half': 10.0,
@@ -155,7 +158,8 @@ class Carnivore(Animal):    # test that will starve w/o herbs
                       'a_half': 60.0, 'phi_age': 0.4, 'w_half': 4.0,
                       'phi_weight': 0.4, 'mu': 0.4, 'lambda': 1.0,
                       'gamma': 0.8, 'zeta': 3.5, 'xi': 1.1,
-                      'omega': 0.9, 'F': 50.0, 'eta': 0.0125, 'DeltaPhiMax': 10.0}
+                      'omega': 0.9, 'F': 50.0,
+                      'eta': 0.0125, 'DeltaPhiMax': 10.0}
 
     def __init__(self, weight=None, age=0):
         """Create Animal with age 0."""
@@ -169,5 +173,3 @@ class Carnivore(Animal):    # test that will starve w/o herbs
         """
 
         self.weight += available_meat * self.default_params['beta']
-
-

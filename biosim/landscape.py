@@ -15,7 +15,6 @@ class Landscape:
 
     @classmethod
     def set_parameters(cls, new_params=default_params):
-
         """
         Set class parameters.j
 
@@ -49,7 +48,7 @@ class Landscape:
 
         return {'f_max': cls.default_params['f_max']}
 
-    def __init__(self): #, num_herbs=0, num_carns=0):
+    def __init__(self):  # , num_herbs=0, num_carns=0):
         """
         Parameters#
         ----------
@@ -111,7 +110,8 @@ class Landscape:
             newborn_animals = []
             for animal in species:
                 if animal.birth(len(species)):
-                    animal.weight -= animal.default_params['w_birth'] * animal.default_params['xi']
+                    animal.weight -= animal.default_params['w_birth'] * \
+                        animal.default_params['xi']
                     if isinstance(animal, Herbivore):
                         newborn_animals.append(Herbivore())
                     elif isinstance(animal, Carnivore):
@@ -135,7 +135,8 @@ class Landscape:
                 desc = True
                 for animal in range(len(species) - 1):
                     if species[animal].phi < species[animal + 1].phi:
-                        species[animal], species[animal + 1] = species[animal + 1], species[animal]
+                        species[animal], species[animal + 1] = \
+                            species[animal + 1], species[animal]
                         desc = False
 
     def eat_request(self):
@@ -157,8 +158,10 @@ class Landscape:
                 herb = self.pop_animals[0][len(self.pop_animals) - i]
                 if carn.phi <= herb.phi:
                     p = 0
-                elif 0 < carn.phi - herb.phi < carn.default_params['DeltaPhiMax']:
-                    p = (carn.phi - herb.phi) / carn.default_params['DeltaPhiMax']
+                elif 0 < carn.phi - herb.phi < \
+                        carn.default_params['DeltaPhiMax']:
+                    p = (carn.phi - herb.phi) / \
+                        carn.default_params['DeltaPhiMax']
                 else:
                     p = 1
 
@@ -174,7 +177,8 @@ class Landscape:
             if isinstance(self, Jungle):
                 self.f = self.default_params['f_max']
             elif isinstance(self, Savannah):
-                self.f += self.default_params['alpha'] * (self.default_params['f_max'] - self.f)
+                self.f += self.default_params['alpha'] * \
+                    (self.default_params['f_max'] - self.f)
 
     @property
     def abundance_fodder_herb(self):
@@ -183,7 +187,8 @@ class Landscape:
     @property
     def abundance_fodder_carn(self):
 
-        return self.sum_herb_mass / ((self.num_carns + 1) * Carnivore.default_params['F'])
+        return self.sum_herb_mass / \
+               ((self.num_carns + 1) * Carnivore.default_params['F'])
 
     def moving_propensity(self, animal, epsilon):
         if isinstance(self, (Ocean, Mountain)):
@@ -196,25 +201,24 @@ class Landscape:
         for species in self.pop_animals:
             for animal in species:
                 if random.random() < animal.default_params['mu'] * animal.phi:
-                    ###### Finn destination! #####
-                    if  isinstance(animal, Herbivore):
+                    if isinstance(animal, Herbivore):
                         prop_list = [self.moving_propensity(animal=animal,
-                            epsilon=neighbour.abundance_fodder_herb)
-                            for neighbour in neighbours]
+                                     epsilon=neighbour.abundance_fodder_herb)
+                                     for neighbour in neighbours]
                     elif isinstance(animal, Carnivore):
                         prop_list = [self.moving_propensity(animal=animal,
-                            epsilon=neighbour.abundance_fodder_carn)
-                            for neighbour in neighbours]
+                                     epsilon=neighbour.abundance_fodder_carn)
+                                     for neighbour in neighbours]
                     if sum(prop_list) == 0:
                         break
-                    prob_list = [prop/sum(prop_list) for prop in prop_list]
+                    prob_list = [prop / sum(prop_list) for prop in prop_list]
                     p = random.random()
                     i = 0
-                    psum = 0
-                    while(p>psum):
-                        psum += prob_list[i]
+                    p_sum = 0
+                    while p > p_sum:
+                        p_sum += prob_list[i]
                         i += 1
-                    destination = neighbours[i-1]
+                    destination = neighbours[i - 1]
 
                     if isinstance(animal, Herbivore):
                         destination.new_pop[0].append(animal)
@@ -233,7 +237,6 @@ class Landscape:
 class Jungle(Landscape):
 
     default_params = {'f_max': 800.0}
-
 
 
 class Savannah(Landscape):
