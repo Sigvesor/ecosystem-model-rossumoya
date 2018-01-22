@@ -3,9 +3,10 @@
 __author__ = 'Sigve Sorensen', 'Filip Rotnes'
 __email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
 
-from landscape import *
-from animals import *
 import numpy as np
+
+from biosim.landscape import *
+
 
 class Island:
     """A population with many jungles"""

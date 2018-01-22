@@ -3,11 +3,12 @@
 __author__ = 'Sigve Sorensen', 'Filip Rotnes'
 __email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
 
-from landscape import *
-from animals import *
-from island import *
-import matplotlib.pyplot as plt
 import timeit
+
+import matplotlib.pyplot as plt
+#from biosim.landscape import *
+
+from biosim.island import *
 
 
 class BioSim:
