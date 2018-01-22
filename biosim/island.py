@@ -98,15 +98,15 @@ class Island:
 
             if isinstance(cell, (Mountain, Ocean)):
                 raise ValueError('Animals can not be placed in ' +
-                                 str(type(cell)) + '. Permitted landscapes: ' +
+                                 str(type(cell)) + '. Permitted landscapes: ' 
                                                    'Jungle, Savannah'
                                                    ' and Desert.')
             for animal in dictionary['pop']:
                 age, weight = animal['age'], animal['weight']
                 if not isinstance(age, int) or age < 0 or weight < 0:
-                    raise ValueError('Violated one of two conditions:\n' +
-                                     '1. Animal age has to be a non-negative' +
-                                     ' integer.\n2. Animal weight has to be' +
+                    raise ValueError('Violated one of two conditions:\n' 
+                                     '1. Animal age has to be a non-negative' 
+                                     ' integer.\n2. Animal weight has to be' 
                                      ' a non-negative number(float).')
             cell.populate_cell(dictionary['pop'])
 
