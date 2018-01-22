@@ -43,20 +43,29 @@ class Island:
 
         return self.total_island_population
 
-    def check_string_map(self, island_map):
-        map_error = ValueError('The edges of the maps has to be Ocean only! \n')
+    def check_string_map(self, string_map):
+        landscape_error = ValueError('Wrong input for island map, \n'
+                                     'D = Desert \nJ = Jungle \nM = Mountain \n'
+                                     'O = Ocean \nS = Savannah\n')
+        allowed_landscapes = ['D', 'J', 'M', 'O', 'S']
+        for row in string_map:
+            for cell in row:
+                if cell not in allowed_landscapes:
+                    raise landscape_error
 
+
+        map_error = ValueError('The edges of the maps has to be Ocean only! \n')
         for end in [0, -1]:
-            for cell in island_map[end]:
+            for cell in string_map[end]:
                 if cell != 'O':
                     raise map_error
-
-        for row in island_map[1:-1]:
-            invalid_ends = row.startswith('O') and row.endswith('O')
-            if invalid_ends:
+        for row in string_map[1:-1]:
+            valid_ends = row.startswith('O') and row.endswith('O')
+            if not valid_ends:
                 raise map_error
 
-        row_lengths = [len(row) for row in island_map]
+
+        row_lengths = [len(row) for row in string_map]
         if max(row_lengths) != min(row_lengths):
             raise ValueError('Each row in map must be of the same length! \n')
 
@@ -81,7 +90,7 @@ class Island:
             island_map = map_str
         island_map = island_map.replace(" ", "").splitlines()
 
-        self.check_string_map(island_map=island_map)
+        self.check_string_map(string_map=island_map)
 
         self.map = np.empty(
             (len(island_map), len(island_map[0])), dtype=object)
