@@ -3,8 +3,9 @@
 __author__ = 'Sigve Sorensen', 'Filip Rotnes'
 __email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
 
-from animals import *
 from math import exp as e
+
+from biosim.animals import *
 
 
 class Landscape:
@@ -13,7 +14,7 @@ class Landscape:
     default_params = {'f_max': 0}
 
     @classmethod
-    def set_params(cls, new_params=default_params):
+    def set_parameters(cls, new_params=default_params):
 
         """
         Set class parameters.j
