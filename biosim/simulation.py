@@ -3,7 +3,6 @@
 __author__ = 'Sigve Sorensen', 'Filip Rotnes'
 __email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
 
-import timeit
 
 import matplotlib.pyplot as plt
 #from biosim.landscape import *
@@ -44,6 +43,8 @@ class BioSim:
 
 
 if __name__ == "__main__":
+    import timeit
+
     t0 = timeit.default_timer()
 
     kart = """OOOOOOOOOOOOOOOOOOOOO
