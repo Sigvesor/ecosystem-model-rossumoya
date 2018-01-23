@@ -8,7 +8,9 @@ from math import exp as e
 
 
 class Animal:
-    """Animal which eat, age, mate, loose weight and die with probabilities."""
+    """
+    Animal which eat, age, reproduce, migrate and die with probabilities.
+    """
 
     default_params = {'w_birth': None, 'sigma_birth': None, 'beta': None,
                       'a_half': None, 'phi_age': None, 'w_half': None,
@@ -19,7 +21,7 @@ class Animal:
     @classmethod
     def set_parameters(cls, new_params):
         """
-        Set class parameters.
+        Set class parameters. Checks if input is in the right format.
 
         Parameters
         ----------
@@ -65,17 +67,16 @@ class Animal:
     def get_params(cls):
         """
         Get class parameters.
-
-        Returns
-        -------
-        dict
-            Dictionary with class parameters.
+        :return: Dict, with class parameters.
         """
 
         return cls.default_params
 
     def __init__(self, weight=default_params['w_birth'], age=0.0):
-        """Create Animal with age 0."""
+        """
+        Create Animal with age 0 and birth weight.
+        """
+
         self.weight = random.normalvariate(
             weight, self.default_params['sigma_birth'])  # + 40
         self.age = age
@@ -87,19 +88,17 @@ class Animal:
             * 1 / (1 + e(-self.default_params['phi_weight'] *
                          (self.weight - self.default_params['w_half'])))
 
-
     def ages(self):
-        """Animal ages by one cycle."""
+        """
+        Animal ages by one cycle.
+        """
+
         self.age += 1
 
     def dies(self):
         """
         Decide if Animal dies.
-
-        Returns
-        -------
-        bool
-            True if Animal dies.
+        :return: Bool, True if Animal dies.
         """
 
         p_death = self.default_params['omega'] * (1 - self.phi)
@@ -108,12 +107,9 @@ class Animal:
     def fitness(self):
         """
         Calculates the fitness of the Animal.
-
-        Returns
-        -------
-        float
-            Between [0, 1]
+        :return: Float, between [0, 1]
         """
+
         #phi_exp = self.default_params['phi_age'] * \
         #          (self.age - self.default_params['a_half'])
         #self.phi = (1 / (1 + e(phi_exp))) * (1 /  (1 + e(- phi_exp)))
@@ -126,13 +122,11 @@ class Animal:
 
     def birth(self, n_animals):
         """
-        Decide whether a Animal will give birth.
-
-        Returns
-        -------
-        bool
-            True if Animal gives birth.
+        Decides whether an Animal will give birth.
+        :param n_animals: Total number of that species, in that landscape.
+        :return: Bool, True if animal gives birth.
         """
+
         if self.weight < self.default_params['zeta'] *\
                 (self.default_params['w_birth'] +
                     self.default_params['sigma_birth']):
@@ -146,12 +140,16 @@ class Animal:
 
     def weightloss(self):
         """
-        Updates the weight following a weightloss of an Animal in a cycle.
+        Updates the weight, following a weight loss, of an Animal in a cycle.
         """
+
         self.weight -= self.default_params['eta'] * self.weight
 
 
 class Herbivore(Animal):  # test that will starve in desert
+    """
+    Herbivore. Underclass of superclass Animal, with its default parameters.
+    """
 
     default_params = {'w_birth': 8.0, 'sigma_birth': 1.5, 'beta': 0.9,
                       'a_half': 40.0, 'phi_age': 0.2, 'w_half': 10.0,
@@ -160,7 +158,10 @@ class Herbivore(Animal):  # test that will starve in desert
                       'omega': 0.4, 'F': 10.0, 'eta': 0.05}
 
     def __init__(self, weight=None, age=0):
-        """Create Animal with age 0."""
+        """
+        Creates a Herbivore with age 0.
+        """
+
         if weight is None:
             weight = self.default_params['w_birth']
         Animal.__init__(self, weight=weight, age=age)
@@ -174,6 +175,9 @@ class Herbivore(Animal):  # test that will starve in desert
 
 
 class Carnivore(Animal):    # test that will starve w/o herbs
+    """
+    Carnivore. Underclass of superclass Animal, with its default parameters.
+    """
 
     default_params = {'w_birth': 6.0, 'sigma_birth': 1.0, 'beta': 0.75,
                       'a_half': 60.0, 'phi_age': 0.4, 'w_half': 4.0,
@@ -183,7 +187,10 @@ class Carnivore(Animal):    # test that will starve w/o herbs
                       'eta': 0.125, 'DeltaPhiMax': 10.0}
 
     def __init__(self, weight=None, age=0):
-        """Create Animal with age 0."""
+        """
+        Creates a Carnivore with age 0.
+        """
+
         if weight is None:
             weight = self.default_params['w_birth']
         Animal.__init__(self, weight=weight, age=age)

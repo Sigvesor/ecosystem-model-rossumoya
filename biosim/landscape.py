@@ -4,12 +4,13 @@ __author__ = 'Sigve Sorensen', 'Filip Rotnes'
 __email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
 
 from math import exp as e
-
 from .animals import *
 
 
 class Landscape:
-    """A landscape containing Herbivores and Carnivores."""
+    """
+    Landscape containing Herbivores and/or Carnivores.
+    """
 
     default_params = {'f_max': 0}
 
@@ -38,64 +39,72 @@ class Landscape:
     @classmethod
     def get_params(cls):
         """
-        Get class parameters
-
-        Returns
-        -------
-        dict
-            Dictionary with class parameters.
+        Get class parameters.
+        :return: dict
+            class parameters.
         """
 
         return {'f_max': cls.default_params['f_max']}
 
     def __init__(self):  # , num_herbs=0, num_carns=0):
         """
-        Parameters#
-        ----------
-        num_herbs : int
-            number of Herbivores in the jungle.
+        Creates a landscape.
         """
         self.f = self.default_params['f_max']
         self.pop_animals = [[], []]
         self.new_pop = [[], []]
 
     def populate_cell(self, population=None):
+        """
+        :param population: list
+            list of dictionaries with animal parameters.
+        """
         for animal in population:
 
-            if animal['species'] == 'Herbivore':
+            if isinstance(animal, Herbivore):
                 self.pop_animals[0].append(Herbivore(weight=animal['weight'],
                                                      age=animal['age']))
-            elif animal['species'] == 'Carnivore':
+            elif isinstance(animal, Carnivore):
                 self.pop_animals[1].append(Carnivore(weight=animal['weight'],
                                                      age=animal['age']))
 
     @property
     def num_herbs(self):
-        """Return number of Herbivore in landscape"""
+        """
+        Return number of Herbivore in landscape.
+        """
 
         return len(self.pop_animals[0])
 
     @property
     def num_carns(self):
-        """Return number of Carnivore in landscape"""
+        """
+        Return number of Carnivore in landscape.
+        """
 
         return len(self.pop_animals[1])
 
     @property
     def sum_herb_mass(self):
-        """Return the sum of the Herbivore weights in the landscape"""
+        """
+        Return the sum of Herbivore weights in the landscape.
+        """
 
         return sum([herb.weight for herb in self.pop_animals[0]])
 
     def aging(self):
-        """Age all animals in Jungle by one cycle."""
+        """
+        Age all animals in landscape with one cycle.
+        """
 
         for species in self.pop_animals:
             for animal in species:
                 animal.ages()
 
     def death(self):
-        """Removes dying animals."""
+        """
+        Removes dying animals.
+        """
 
         def survivors(pop):
             return [animal for animal in pop if not animal.dies()]
@@ -104,7 +113,9 @@ class Landscape:
         self.pop_animals[1] = survivors(self.pop_animals[1])
 
     def reproduction(self):
-        """For each Animal reproducing, add one new."""
+        """
+        For each Animal reproducing, add one new.
+        """
 
         for species in self.pop_animals:
             newborn_animals = []
@@ -119,21 +130,28 @@ class Landscape:
             species.extend(newborn_animals)
 
     def weightloss(self):
-        """Updates the weight of all animals,
-           followed by a yearly weight loss."""
+        """
+        Updates the weight of all animals, following a yearly weight loss.
+        """
+
         for species in self.pop_animals:
             for animal in species:
                 animal.weightloss()
 
     def update_fitness(self):
-        """Updates fitness for all animals."""
+        """
+        Updates fitness for all animals.
+        """
+
         for species in self.pop_animals:
             for animal in species:
                 animal.fitness()
 
     def fitness_sort(self):
-        """Sorts animals by fitness, descending.
-           Makes sure the fittest eat first."""
+        """
+        Sorts animals in landscape by their fitness.
+        """
+
         desc = False
         for species in self.pop_animals:
             while not desc:
@@ -145,11 +163,11 @@ class Landscape:
                         desc = False
 
     def eat_request(self):
-        """Herbivores and Carnivores eats in the landscape, in order
-           of fitness.
+        """
+        Herbivores and Carnivores eats in the landscape, in order of fitness.
+        The least fit herbivores gets eaten first.
+        """
 
-
-           """
         for herb in self.pop_animals[0]:
             request = herb.default_params['F']
             if request <= self.f:
@@ -183,6 +201,9 @@ class Landscape:
                     i += 1
 
     def regenerate(self):
+        """
+        If possible, regenerates fodder in the landscape.
+        """
         if self.f != self.default_params['f_max']:
             if isinstance(self, Jungle):
                 self.f = self.default_params['f_max']
@@ -192,35 +213,59 @@ class Landscape:
 
     @property
     def abundance_fodder_herb(self):
+        """
+        Landscape property: Abundance of fodder, for herbivores.
+        :return: float
+            Abundance of fodder
+        """
         return self.f / ((self.num_herbs + 1) * Herbivore.default_params['F'])
 
     @property
     def abundance_fodder_carn(self):
+        """
+        Landscape property: Abundance of fodder, for carnivores.
+        :return: float
+            Abundance of meat.
+        """
 
         return self.sum_herb_mass / \
-               ((self.num_carns + 1) * Carnivore.default_params['F'])
+            ((self.num_carns + 1) * Carnivore.default_params['F'])
 
     def moving_propensity(self, animal, epsilon):
+        """
+        Calculates the animal's propensity to migrate.
+        :param animal: animal ready to migrate
+        :param epsilon: abundance of fodder/meat
+        :return: float
+            Moving propensity
+
+        """
         if isinstance(self, (Ocean, Mountain)):
             return 0
         else:
             return e(animal.default_params['lambda'] * epsilon)
 
     def migrate(self, neighbours):
+        """
+        Migrates animals in landscape.
+        :param neighbours: list of valid landscapes for migration
+        """
 
         for species in self.pop_animals:
             for animal in species:
                 if random.random() < animal.default_params['mu'] * animal.phi:
                     if isinstance(animal, Herbivore):
-                        prop_list = [self.moving_propensity(animal=animal,
-                                     epsilon=neighbour.abundance_fodder_herb)
-                                     for neighbour in neighbours]
+                        prop_list = [self.moving_propensity(
+                            animal=animal,
+                            epsilon=neighbour.abundance_fodder_herb
+                        ) for neighbour in neighbours]
                     elif isinstance(animal, Carnivore):
-                        prop_list = [self.moving_propensity(animal=animal,
-                                     epsilon=neighbour.abundance_fodder_carn)
-                                     for neighbour in neighbours]
-                    if sum(prop_list) == 0:
-                        break
+                        prop_list = [self.moving_propensity(
+                            animal=animal,
+                            epsilon=neighbour.abundance_fodder_carn
+                        ) for neighbour in neighbours]
+                    #if sum(prop_list) == 0:
+                    #    break
                     prob_list = [prop / sum(prop_list) for prop in prop_list]
                     p = random.random()
                     i = 0
@@ -245,25 +290,40 @@ class Landscape:
 
 
 class Jungle(Landscape):
+    """
+    Jungle. Underclass of superclass Landscape.
+    """
 
     default_params = {'f_max': 800.0}
 
 
 class Savannah(Landscape):
+    """
+    Savannah. Underclass of superclass Landscape.
+    """
 
     default_params = {'f_max': 300.0, 'alpha': 0.3}
 
 
 class Desert(Landscape):
+    """
+    Desert. Underclass of superclass Landscape.
+    """
 
     default_params = {'f_max': 0.0}
 
 
 class Ocean(Landscape):
+    """
+    Ocean. Underclass of superclass Landscape.
+    """
 
     default_params = {'f_max': 0.0}
 
 
 class Mountain(Landscape):
+    """
+    Mountain. Underclass of superclass Landscape.
+    """
 
     default_params = {'f_max': 0.0}
