@@ -4,7 +4,7 @@ __author__ = 'Sigve Sorensen', 'Filip Rotnes'
 __email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
 
 from math import exp as e
-from .animals import *
+from animals import *
 
 
 class Landscape:
@@ -61,10 +61,10 @@ class Landscape:
         """
         for animal in population:
 
-            if isinstance(animal, Herbivore):
+            if animal['species'] == 'Herbivore':
                 self.pop_animals[0].append(Herbivore(weight=animal['weight'],
                                                      age=animal['age']))
-            elif isinstance(animal, Carnivore):
+            elif animal['species'] == 'Carnivore':
                 self.pop_animals[1].append(Carnivore(weight=animal['weight'],
                                                      age=animal['age']))
 
@@ -243,7 +243,7 @@ class Landscape:
         if isinstance(self, (Ocean, Mountain)):
             return 0
         else:
-            return e(animal.default_params['lambda'] * epsilon)
+            return e(animal.default_params['lambda'] * epsilon) # kan være funk i animal..
 
     def migrate(self, neighbours):
         """
@@ -252,22 +252,37 @@ class Landscape:
         """
 
         for species in self.pop_animals:
+
             for animal in species:
-                if random.random() < animal.default_params['mu'] * animal.phi:
-                    if isinstance(animal, Herbivore):
-                        prop_list = [self.moving_propensity(
+
+                if random.random() < animal.default_params['mu'] * animal.phi:  # skal dyret gå?
+
+                    if isinstance(animal, Herbivore):                           # herb?     put in herb?
+                        prop_list = [self.moving_propensity(                    # dyrets tendens til å gå mot hver av nabocellene
                             animal=animal,
                             epsilon=neighbour.abundance_fodder_herb
                         ) for neighbour in neighbours]
-                    elif isinstance(animal, Carnivore):
-                        prop_list = [self.moving_propensity(
+
+                    elif isinstance(animal, Carnivore):                         # carn?     put in carn?
+                        prop_list = [self.moving_propensity(                    # tendens
                             animal=animal,
                             epsilon=neighbour.abundance_fodder_carn
                         ) for neighbour in neighbours]
-                    #if sum(prop_list) == 0:
+
+                    #if sum(prop_list) == 0:                                     # denne delen er litt feil...       # hva hvis sum(prop_list)==0 ?
+                    #    if isinstance(animal, Herbivore):
+                    #        self.new_pop[0].append(animal)
+                    #    elif isinstance(animal, Carnivore):
+                    #        self.new_pop[1].append(animal)
                     #    break
-                    prob_list = [prop / sum(prop_list) for prop in prop_list]
-                    p = random.random()
+                    try: prob_list = [prop / sum(prop_list) for prop in prop_list]   # normalisér
+                    except:
+                        if isinstance(animal, Herbivore):
+                            self.new_pop[0].append(animal)
+                        elif isinstance(animal, Carnivore):
+                            self.new_pop[1].append(animal)
+                        break
+                    p = random.random()                                         # plassér
                     i = 0
                     p_sum = 0
                     while p > p_sum:
@@ -280,13 +295,13 @@ class Landscape:
                     elif isinstance(animal, Carnivore):
                         destination.new_pop[1].append(animal)
 
-                else:
+                else:                                                           # hvis dyret ikke skal gå
                     if isinstance(animal, Herbivore):
                         self.new_pop[0].append(animal)
                     elif isinstance(animal, Carnivore):
                         self.new_pop[1].append(animal)
 
-        self.pop_animals = [[], []]
+        self.pop_animals = [[], []]                                             # alle dyr skal være i en new_pop i cella eller en nabo; tøm pop_animals
 
 
 class Jungle(Landscape):
