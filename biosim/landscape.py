@@ -235,11 +235,11 @@ class Landscape:
                 if animal.migrating and animal.is_herbivore:
                     animal.new_grassland(neighbours).append(animal)
                 elif animal.migrating and animal.is_carnivore:
-                    animal.new_huntingground(neighbours).append(animal)
+                    animal.new_hunting_land(neighbours).append(animal)
                 else:                                                           # hvis dyret ikke skal gå
-                    if isinstance(animal, Herbivore):
+                    if animal.is_herbivore:
                         self.new_pop[0].append(animal)
-                    elif isinstance(animal, Carnivore):
+                    elif animal.is_carnivore:
                         self.new_pop[1].append(animal)
         self.pop_animals = [[], []]                                             # alle dyr skal være i en new_pop i cella eller en nabo; tøm pop_animals
 
