@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 
-__author__ = 'Sigve Sorensen', 'Filip Rotnes'
-__email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
-
-
 import matplotlib.pyplot as plt
 #from biosim.landscape import *
+import random
+from island import *
 
-from biosim.island import *
+__author__ = 'Sigve Sorensen', 'Filip Rotnes'
+__email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
 
 
 class BioSim:
@@ -29,9 +28,6 @@ class BioSim:
         # print(herb_list)
         # print(carn_list)
         #fig = plt.figure()
-        plt.plot(range(len(self.herb_list)), self.herb_list, 'r-',
-                 range(len(self.carn_list)), self.carn_list, 'b-')
-        plt.show()
 
         # return [herb_list, carn_list]
 
@@ -39,7 +35,9 @@ class BioSim:
         self.island.distribute_animals(population)
 
     def sim_plot(self):
-        pass
+        plt.plot(range(len(self.herb_list)), self.herb_list, 'r-',
+                 range(len(self.carn_list)), self.carn_list, 'b-')
+        plt.show()
 
 
 if __name__ == "__main__":
@@ -48,27 +46,30 @@ if __name__ == "__main__":
     t0 = timeit.default_timer()
 
     kart = """OOOOOOOOOOOOOOOOOOOOO
-        OOOOOOOOSMMMMJJJJJJJO
-        OSSSSSJJJJMMJJJJJJJOO
-        OSSSSSSSSSMMJJJJJJOOO
-        OSSSSSJJJJJJJJJJJJOOO
-        OSSSSSJJJDDJJJSJJJOOO
-        OSSJJJJJDDDJJJSSSSOOO
-        OOSSSSJJJDDJJJSOOOOOO
-        OSSSJJJJJDDJJJJJJJOOO
-        OSSSSJJJJDDJJJJOOOOOO
-        OOOSSSSJJJJJJJOOOOOOO
-        OOOOOOOOOOOOOOOOOOOOO"""
+    OOOOOOOOSMMMMJJJJJJJO
+    OSSSSSJJJJMMJJJJJJJOO
+    OSSSSSSSSSMMJJJJJJOOO
+    OSSSSSJJJJJJJJJJJJOOO
+    OSSSSSJJJDDJJJSJJJOOO
+    OSSJJJJJDDDJJJSSSSOOO
+    OOSSSSJJJDDJJJSOOOOOO
+    OSSSJJJJJDDJJJJJJJOOO
+    OSSSSJJJJDDJJJJOOOOOO
+    OOSSSSJJJJJJJJOOOOOOO
+    OOOSSSSJJJJJJJOOOOOOO
+    OOOOOOOOOOOOOOOOOOOOO"""
 
-    ini_herbs = [{'loc': (10, 10),
+
+    ini_herbs = [{'loc': (2, 20),
                   'pop': [{'species': 'Herbivore', 'age': 5,
                            'weight': 20} for _ in range(150)]}]
-    ini_carns = [{'loc': (10, 10),
+    ini_carns = [{'loc': (2, 20),
                   'pop': [{'species': 'Carnivore', 'age': 5,
                            'weight': 20} for _ in range(40)]}]
     sim = BioSim(ini_pop=ini_herbs, island_map=kart, seed=12634)
-    sim.simulate(10)
+    sim.simulate(30)
     sim.add_population(ini_carns)
-    sim.simulate(10)
+    sim.simulate(40)
+    sim.sim_plot()
     print(timeit.default_timer() - t0)
     # plt.show()
