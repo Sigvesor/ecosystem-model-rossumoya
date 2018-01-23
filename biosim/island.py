@@ -4,8 +4,8 @@ __author__ = 'Sigve Sorensen', 'Filip Rotnes'
 __email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
 
 import numpy as np
-
 from landscape import *
+import random
 
 
 class Island:
@@ -27,7 +27,8 @@ class Island:
 
                 cell.regenerate()
                 cell.fitness_sort()
-                cell.eat_request()
+                cell.eat_request_herb()
+                cell.eat_request_carn()
                 cell.update_fitness()
                 cell.reproduction()
 
