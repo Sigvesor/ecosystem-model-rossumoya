@@ -4,13 +4,11 @@ __author__ = 'Sigve Sorensen', 'Filip Rotnes'
 __email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
 
 from math import exp as e
-from .animals import *
+from animals import *
 
 
 class Landscape:
-    """
-    Landscape containing Herbivores and/or Carnivores.
-    """
+    """Landscape containing Herbivores and/or Carnivores."""
 
     default_params = {'f_max': 0}
 
@@ -47,9 +45,8 @@ class Landscape:
         return {'f_max': cls.default_params['f_max']}
 
     def __init__(self):  # , num_herbs=0, num_carns=0):
-        """
-        Creates a landscape.
-        """
+        """Creates an instance of Landscape"""
+
         self.f = self.default_params['f_max']
         self.pop_animals = [[], []]
         self.new_pop = [[], []]
@@ -70,41 +67,31 @@ class Landscape:
 
     @property
     def num_herbs(self):
-        """
-        Return number of Herbivore in landscape.
-        """
+        """Return number of Herbivore in landscape."""
 
         return len(self.pop_animals[0])
 
     @property
     def num_carns(self):
-        """
-        Return number of Carnivore in landscape.
-        """
+        """Return number of Carnivore in landscape."""
 
         return len(self.pop_animals[1])
 
     @property
     def sum_herb_mass(self):
-        """
-        Return the sum of Herbivore weights in the landscape.
-        """
+        """Return the sum of Herbivore weights in the landscape."""
 
         return sum([herb.weight for herb in self.pop_animals[0]])
 
     def aging(self):
-        """
-        Age all animals in landscape with one cycle.
-        """
+        """Age all animals in landscape with one cycle."""
 
         for species in self.pop_animals:
             for animal in species:
                 animal.ages()
 
     def death(self):
-        """
-        Removes dying animals.
-        """
+        """Removes dying animals."""
 
         def survivors(pop):
             return [animal for animal in pop if not animal.dies()]
@@ -113,9 +100,7 @@ class Landscape:
         self.pop_animals[1] = survivors(self.pop_animals[1])
 
     def reproduction(self):
-        """
-        For each Animal reproducing, add one new.
-        """
+        """For each Animal reproducing, add one new."""
 
         for species in self.pop_animals:
             newborn_animals = []
@@ -131,7 +116,8 @@ class Landscape:
 
     def weightloss(self):
         """
-        Updates the weight of all animals, following a yearly weight loss.
+        Updates the weight of all animals,
+        following a yearly weight loss.
         """
 
         for species in self.pop_animals:
@@ -139,18 +125,14 @@ class Landscape:
                 animal.weightloss()
 
     def update_fitness(self):
-        """
-        Updates fitness for all animals.
-        """
+        """Updates fitness for all animals."""
 
         for species in self.pop_animals:
             for animal in species:
                 animal.fitness()
 
     def fitness_sort(self):
-        """
-        Sorts animals in landscape by their fitness.
-        """
+        """Sorts animals in landscape by their fitness."""
 
         desc = False
         for species in self.pop_animals:
@@ -201,9 +183,7 @@ class Landscape:
                     i += 1
 
     def regenerate(self):
-        """
-        If possible, regenerates fodder in the landscape.
-        """
+        """If possible, regenerates fodder in the landscape."""
         if self.f != self.default_params['f_max']:
             if isinstance(self, Jungle):
                 self.f = self.default_params['f_max']
@@ -290,40 +270,30 @@ class Landscape:
 
 
 class Jungle(Landscape):
-    """
-    Jungle. Underclass of superclass Landscape.
-    """
+    """Jungle. Underclass of superclass Landscape."""
 
     default_params = {'f_max': 800.0}
 
 
 class Savannah(Landscape):
-    """
-    Savannah. Underclass of superclass Landscape.
-    """
+    """Savannah. Underclass of superclass Landscape."""
 
     default_params = {'f_max': 300.0, 'alpha': 0.3}
 
 
 class Desert(Landscape):
-    """
-    Desert. Underclass of superclass Landscape.
-    """
+    """Desert. Underclass of superclass Landscape."""
 
     default_params = {'f_max': 0.0}
 
 
 class Ocean(Landscape):
-    """
-    Ocean. Underclass of superclass Landscape.
-    """
+    """Ocean. Underclass of superclass Landscape."""
 
     default_params = {'f_max': 0.0}
 
 
 class Mountain(Landscape):
-    """
-    Mountain. Underclass of superclass Landscape.
-    """
+    """Mountain. Underclass of superclass Landscape."""
 
     default_params = {'f_max': 0.0}
