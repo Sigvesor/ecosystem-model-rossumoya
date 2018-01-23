@@ -16,7 +16,7 @@ class Landscape:
     @classmethod
     def set_parameters(cls, new_params=default_params):
         """
-        Set class parameters.
+        Set class parameters.j
 
         Parameters
         -------
@@ -45,7 +45,7 @@ class Landscape:
 
         return {'f_max': cls.default_params['f_max']}
 
-    def __init__(self):
+    def __init__(self):  # , num_herbs=0, num_carns=0):
         """Creates an instance of Landscape"""
 
         self.f = self.default_params['f_max']
@@ -107,12 +107,12 @@ class Landscape:
             newborn_animals = []
             for animal in species:
                 if animal.birth(len(species)):
+                    animal.weight -= animal.default_params['w_birth'] * \
+                        animal.default_params['xi']
                     if isinstance(animal, Herbivore):
                         newborn_animals.append(Herbivore())
                     elif isinstance(animal, Carnivore):
                         newborn_animals.append(Carnivore())
-                    animal.weight -= newborn_animals[-1].weight * \
-                        animal.default_params['xi']
             species.extend(newborn_animals)
 
     def weightloss(self):
@@ -135,8 +135,8 @@ class Landscape:
     def fitness_sort(self):
         """Sorts animals in landscape by their fitness."""
 
+        desc = False
         for species in self.pop_animals:
-            desc = False
             while not desc:
                 desc = True
                 for animal in range(len(species) - 1):
@@ -145,8 +145,11 @@ class Landscape:
                             species[animal + 1], species[animal]
                         desc = False
 
-    def eat_request_herb(self):
-        """Herbivores eat in the landscape, in order of fitness."""
+    def eat_request(self):
+        """
+        Herbivores and Carnivores eats in the landscape, in order of fitness.
+        The least fit herbivores gets eaten first.
+        """
 
         for herb in self.pop_animals[0]:
             request = herb.default_params['F']
@@ -179,7 +182,7 @@ class Landscape:
                     (self.default_params['f_max'] - self.f)
 
     @property
-    def abundance_fodder_herb(self):
+    def abundance_fodder_h(self):
         """
         Landscape property: Abundance of fodder, for herbivores.
         :return: float
@@ -188,17 +191,16 @@ class Landscape:
         return self.f / ((self.num_herbs + 1) * Herbivore.default_params['F'])
 
     @property
-    def abundance_fodder_carn(self):
+    def abundance_fodder_c(self):
         """
         Landscape property: Abundance of fodder, for carnivores.
         :return: float
             Abundance of meat.
         """
-
         return self.sum_herb_mass / \
             ((self.num_carns + 1) * Carnivore.default_params['F'])
 
-    def moving_propensity(self, animal, epsilon):
+    def propensity(self, animal, epsilon):
         """
         Calculates the animal's propensity to migrate.
         :param animal: animal ready to migrate
@@ -217,47 +219,17 @@ class Landscape:
         Migrates animals in landscape.
         :param neighbours: list of valid landscapes for migration
         """
-
         for species in self.pop_animals:
-
             for animal in species:
-
-                if random.random() < animal.default_params['mu'] * animal.phi:  # skal dyret gå?
-
-                    if isinstance(animal, Herbivore):                           # herb?     put in herb?
-                        prop_list = [self.moving_propensity(                    # dyrets tendens til å gå mot hver av nabocellene
-                            animal=animal,
-                            epsilon=neighbour.abundance_fodder_herb
-                        ) for neighbour in neighbours]
-
-                    elif isinstance(animal, Carnivore):                         # carn?     put in carn?
-                        prop_list = [self.moving_propensity(                    # tendens
-                            animal=animal,
-                            epsilon=neighbour.abundance_fodder_carn
-                        ) for neighbour in neighbours]
-
-
-                    prob_list = [prop / sum(prop_list) for prop in prop_list]   # normalisér
-
-                    p = random.random()                                         # plassér
-                    i = 0
-                    p_sum = 0
-                    while p > p_sum:
-                        p_sum += prob_list[i]
-                        i += 1
-                    destination = neighbours[i - 1]
-
-                    if isinstance(animal, Herbivore):
-                        destination.new_pop[0].append(animal)
-                    elif isinstance(animal, Carnivore):
-                        destination.new_pop[1].append(animal)
-
+                if animal.migrating and animal.is_herbivore:
+                    animal.new_grassland(neighbours).append(animal)
+                elif animal.migrating and animal.is_carnivore:
+                    animal.new_hunting_land(neighbours).append(animal)
                 else:                                                           # hvis dyret ikke skal gå
-                    if isinstance(animal, Herbivore):
+                    if animal.is_herbivore:
                         self.new_pop[0].append(animal)
-                    elif isinstance(animal, Carnivore):
+                    elif animal.is_carnivore:
                         self.new_pop[1].append(animal)
-
         self.pop_animals = [[], []]                                             # alle dyr skal være i en new_pop i cella eller en nabo; tøm pop_animals
 
 
