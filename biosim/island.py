@@ -6,6 +6,7 @@ __email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
 import numpy as np
 
 from landscape import *
+from animals import *
 
 
 class Island:
@@ -18,6 +19,7 @@ class Island:
         n_pops : int
             number of Herbivore populations
         """
+        self.map_str = None
         self.map = None
 
     def cycle(self):
@@ -73,7 +75,7 @@ class Island:
         if max(row_lengths) != min(row_lengths):
             raise ValueError('Each row in map must be of the same length! \n')
 
-    def map_from_string(self, map_str=None):
+    def map_str_manager(self, map_str=None):
         """
         Creates a numpy array map with landscape cells.
 
@@ -97,10 +99,13 @@ class Island:
             island_map = standard_map
         else:
             island_map = map_str
-        island_map = island_map.replace(" ", "").splitlines()
+        self.map_str = island_map.replace(" ", "").splitlines()
 
-        self.check_string_map(string_map=island_map)
+        self.check_string_map(string_map=self.map_str)
+        return self.map_str
 
+    def map_from_string(self, map_str=None):
+        island_map = self.map_str_manager(map_str)
         self.map = np.empty(
             (len(island_map), len(island_map[0])), dtype=object)
         for x, line in enumerate(island_map):
