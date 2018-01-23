@@ -191,30 +191,33 @@ class Carnivore(Animal):    # test that will starve w/o herbs
 
     def prob_eating(self, herbivore):
 
-        return (self.phi - herbivore.phi) / self.default_params['DeltaPhiMax']
+        delta_phi = self.phi - herbivore.phi
+        delta_phi_max = self.default_params['DeltaPhiMax']
+
+        if delta_phi <= 0:
+            return 0
+        elif 0 < delta_phi < delta_phi_max:
+            return delta_phi / delta_phi_max
+        else:
+            return 1
 
     def eating(self, herbs):
         """Updates the weight of Carnivore after eating."""
 
-        herbs_eaten = []
+
         survivors = []
-        index = 0
         _F = 0
 
-        for herb in herbs:
+        for herb in herbs[::-1]:
             if _F < self.default_params['F'] \
                     and random.random() < self.prob_eating(herb):
-                herbs_eaten.append(index)
-                self.weight += self.default_params['beta'] * \
-                    min(herb.weight, (self.default_params['F'] - _F))
-                _F += min(herb.weight, (self.default_params['F'] - _F))
+                self.weight += self.default_params['beta'] * herb.weight
+                _F += herb.weight
 
                 self.phi = self.fitness()
 
             else:
                 survivors.append(herb)
-
-            index += 1
 
         return survivors
 

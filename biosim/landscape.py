@@ -165,7 +165,7 @@ class Landscape:
         """
 
         carns = self.pop_animals[1]
-        for carn in carns[::-1]:
+        for carn in carns:
 
             self.pop_animals[0] = carn.eating(self.pop_animals[0])
 
