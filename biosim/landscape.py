@@ -5,11 +5,11 @@ __email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
 
 from math import exp as e
 
-from biosim.animals import *
+from .animals import *
 
 
 class Landscape:
-    """A jungle containing Herbivoars"""
+    """A landscape containing Herbivores and Carnivores."""
 
     default_params = {'f_max': 0}
 
@@ -119,16 +119,21 @@ class Landscape:
             species.extend(newborn_animals)
 
     def weightloss(self):
+        """Updates the weight of all animals,
+           followed by a yearly weight loss."""
         for species in self.pop_animals:
             for animal in species:
                 animal.weightloss()
 
     def update_fitness(self):
+        """Updates fitness for all animals."""
         for species in self.pop_animals:
             for animal in species:
                 animal.fitness()
 
     def fitness_sort(self):
+        """Sorts animals by fitness, descending.
+           Makes sure the fittest eat first."""
         desc = False
         for species in self.pop_animals:
             while not desc:
@@ -140,6 +145,11 @@ class Landscape:
                         desc = False
 
     def eat_request(self):
+        """Herbivores and Carnivores eats in the landscape, in order
+           of fitness.
+
+
+           """
         for herb in self.pop_animals[0]:
             request = herb.default_params['F']
             if request <= self.f:
