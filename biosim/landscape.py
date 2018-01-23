@@ -8,7 +8,6 @@ from animals import *
 import random
 
 
-
 class Landscape:
     """Landscape containing Herbivores and/or Carnivores."""
 
@@ -17,7 +16,7 @@ class Landscape:
     @classmethod
     def set_parameters(cls, new_params=default_params):
         """
-        Set class parameters.j
+        Set class parameters.
 
         Parameters
         -------
@@ -136,8 +135,8 @@ class Landscape:
     def fitness_sort(self):
         """Sorts animals in landscape by their fitness."""
 
-        desc = False
         for species in self.pop_animals:
+            desc = False
             while not desc:
                 desc = True
                 for animal in range(len(species) - 1):
@@ -146,11 +145,8 @@ class Landscape:
                             species[animal + 1], species[animal]
                         desc = False
 
-    def eat_request(self):
-        """
-        Herbivores and Carnivores eats in the landscape, in order of fitness.
-        The least fit herbivores gets eaten first.
-        """
+    def eat_request_herb(self):
+        """Herbivores eat in the landscape, in order of fitness."""
 
         for herb in self.pop_animals[0]:
             request = herb.default_params['F']
@@ -162,27 +158,16 @@ class Landscape:
             herb.eating(request)
             herb.fitness()
 
-        for carn in self.pop_animals[1]:
-            request = carn.default_params['F']
-            w_0 = carn.weight
-            i = 1
-            while carn.weight - w_0 < request and i < len(self.pop_animals[0]):
-                herb = self.pop_animals[0][len(self.pop_animals) - i]
-                if carn.phi <= herb.phi:
-                    p = 0
-                elif 0 < carn.phi - herb.phi < \
-                        carn.default_params['DeltaPhiMax']:
-                    p = (carn.phi - herb.phi) / \
-                        carn.default_params['DeltaPhiMax']
-                else:
-                    p = 1
+    def eat_request_carn(self):
+        """
+        Carnivores eat in the landscape, in order of fitness.
+        The least fit Herbivore gets eaten first.
+        """
 
-                if random.random() < p:
-                    carn.eating(herb.weight)
-                    self.pop_animals[0].pop(len(self.pop_animals) - i)
-                    carn.fitness()
-                else:
-                    i += 1
+        carns = self.pop_animals[1]
+        for carn in carns[::-1]:
+
+            self.pop_animals[0] = carn.eating(self.pop_animals[0])
 
     def regenerate(self):
         """If possible, regenerates fodder in the landscape."""
