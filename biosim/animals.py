@@ -5,6 +5,7 @@ __email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
 
 import random
 from math import exp as e
+from landscape import *
 
 
 class Animal:
@@ -143,6 +144,39 @@ class Animal:
 
         self.weight -= self.default_params['eta'] * self.weight
 
+    @property
+    def migrating(self):
+        return random.random() < self.default_params['mu'] * self.phi
+
+    @property
+    def is_herbivore(self):
+        return isinstance(self, Herbivore)
+
+    @property
+    def is_carnivore(self):
+        return isinstance(self, Carnivore)
+
+    #def moving_propensity(self, epsilon):
+    #    illegal = (Mountain, Ocean)
+    #    if isinstance(self, illegal):
+    #        return 0
+    #    else:
+    #        return e(animal.default_params['lambda'] * epsilon)
+    #def new_habitat(self, neighbours):
+#
+#
+#
+    #    if isinstance(self, Herbivore):
+    #        prop_list = [self.moving_propensity(
+    #                        animal=self,
+    #                        epsilon=neighbour.abundance_fodder_herb
+    #                        ) for neighbour in neighbours]
+    #    elif isinstance(self, Carnivore):
+    #        prop_list = [self.moving_propensity(
+    #                        animal=self,
+    #                        epsilon=neighbour.abundance_fodder_carn
+    #                        ) for neighbour in neighbours]
+
 
 class Herbivore(Animal):  # test that will starve in desert
     """
@@ -167,6 +201,15 @@ class Herbivore(Animal):  # test that will starve in desert
         """Updates the weight of Herbivore after eating."""
 
         self.weight += available_fodder * self.default_params['beta']
+
+    def new_grassland(self, neighbours):
+        props = [n.propensity(self, n.abundance_fodder_c) for n in neighbours]
+        prob_list = [prop / sum(props) for prop in props]
+        p = random.random()
+        i = 0
+        while p > sum(prob_list[0:i]):
+            i += 1
+        return neighbours[i - 1].new_pop[0]
 
 
 class Carnivore(Animal):    # test that will starve w/o herbs
@@ -193,3 +236,12 @@ class Carnivore(Animal):    # test that will starve w/o herbs
         """Updates the weight of Carnivore after eating."""
 
         self.weight += available_meat * self.default_params['beta']
+
+    def new_huntingground(self, neighbours):
+        props = [n.propensity(self, n.abundance_fodder_c) for n in neighbours] # [neighbours[i].propensity(self, epsilons[i]) for i in range(len(epsilons))]
+        prob_list = [prop / sum(props) for prop in props]
+        p = random.random()
+        i = 0
+        while p > sum(prob_list[0:i]):
+            i += 1
+        return neighbours[i - 1].new_pop[1]
