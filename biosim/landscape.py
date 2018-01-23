@@ -135,8 +135,8 @@ class Landscape:
     def fitness_sort(self):
         """Sorts animals in landscape by their fitness."""
 
-        desc = False
         for species in self.pop_animals:
+            desc = False
             while not desc:
                 desc = True
                 for animal in range(len(species) - 1):
@@ -145,7 +145,7 @@ class Landscape:
                             species[animal + 1], species[animal]
                         desc = False
 
-    def eat_request(self):
+    def eat_request_herb(self):
         """
         Herbivores and Carnivores eats in the landscape, in order of fitness.
         The least fit herbivores gets eaten first.
