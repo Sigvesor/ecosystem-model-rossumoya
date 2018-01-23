@@ -193,7 +193,7 @@ class Landscape:
                     (self.default_params['f_max'] - self.f)
 
     @property
-    def abundance_fodder_herb(self):
+    def abundance_fodder_h(self):
         """
         Landscape property: Abundance of fodder, for herbivores.
         :return: float
@@ -202,17 +202,16 @@ class Landscape:
         return self.f / ((self.num_herbs + 1) * Herbivore.default_params['F'])
 
     @property
-    def abundance_fodder_carn(self):
+    def abundance_fodder_c(self):
         """
         Landscape property: Abundance of fodder, for carnivores.
         :return: float
             Abundance of meat.
         """
-
         return self.sum_herb_mass / \
             ((self.num_carns + 1) * Carnivore.default_params['F'])
 
-    def moving_propensity(self, animal, epsilon):
+    def propensity(self, animal, epsilon):
         """
         Calculates the animal's propensity to migrate.
         :param animal: animal ready to migrate
@@ -231,47 +230,17 @@ class Landscape:
         Migrates animals in landscape.
         :param neighbours: list of valid landscapes for migration
         """
-
         for species in self.pop_animals:
-
             for animal in species:
-
-                if random.random() < animal.default_params['mu'] * animal.phi:  # skal dyret gå?
-
-                    if isinstance(animal, Herbivore):                           # herb?     put in herb?
-                        prop_list = [self.moving_propensity(                    # dyrets tendens til å gå mot hver av nabocellene
-                            animal=animal,
-                            epsilon=neighbour.abundance_fodder_herb
-                        ) for neighbour in neighbours]
-
-                    elif isinstance(animal, Carnivore):                         # carn?     put in carn?
-                        prop_list = [self.moving_propensity(                    # tendens
-                            animal=animal,
-                            epsilon=neighbour.abundance_fodder_carn
-                        ) for neighbour in neighbours]
-
-
-                    prob_list = [prop / sum(prop_list) for prop in prop_list]   # normalisér
-
-                    p = random.random()                                         # plassér
-                    i = 0
-                    p_sum = 0
-                    while p > p_sum:
-                        p_sum += prob_list[i]
-                        i += 1
-                    destination = neighbours[i - 1]
-
-                    if isinstance(animal, Herbivore):
-                        destination.new_pop[0].append(animal)
-                    elif isinstance(animal, Carnivore):
-                        destination.new_pop[1].append(animal)
-
+                if animal.migrating and animal.is_herbivore:
+                    animal.new_grassland(neighbours).append(animal)
+                elif animal.migrating and animal.is_carnivore:
+                    animal.new_huntingground(neighbours).append(animal)
                 else:                                                           # hvis dyret ikke skal gå
                     if isinstance(animal, Herbivore):
                         self.new_pop[0].append(animal)
                     elif isinstance(animal, Carnivore):
                         self.new_pop[1].append(animal)
-
         self.pop_animals = [[], []]                                             # alle dyr skal være i en new_pop i cella eller en nabo; tøm pop_animals
 
 
