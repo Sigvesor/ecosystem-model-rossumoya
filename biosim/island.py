@@ -5,7 +5,7 @@ __email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
 
 import numpy as np
 
-from biosim.landscape import *
+from .landscape import *
 
 
 class Island:
@@ -21,7 +21,7 @@ class Island:
         self.map = None
 
     def cycle(self):
-        """Update all populations by one cycle."""
+        """Adds one cycle to island population."""
         for row in self.map:
             for cell in row:
 
@@ -99,11 +99,13 @@ class Island:
             map_col = dictionary['loc'][1]
 
             if not 0 < map_row <= self.map.shape[0]:
-                raise ValueError('x-coordinate out of bounds for loc: ' +
+                raise ValueError('x-coordinate out of bounds, '
+                                 'relative to map, for loc: ' +
                                  str((map_row, map_col)))
 
             elif not 0 < map_col <= self.map.shape[1]:
-                raise ValueError('y-coordinate out of bounds for loc: ' +
+                raise ValueError('y-coordinate out of bounds, '
+                                 'relative to map, for loc: ' +
                                  str((map_row, map_col)))
 
             cell = self.map[(map_row - 1, map_col - 1)]
