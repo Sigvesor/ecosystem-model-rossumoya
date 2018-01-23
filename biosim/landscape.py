@@ -4,7 +4,9 @@ __author__ = 'Sigve Sorensen', 'Filip Rotnes'
 __email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
 
 from math import exp as e
-from animals import *
+from .animals import *
+import random
+
 
 
 class Landscape:
@@ -44,7 +46,7 @@ class Landscape:
 
         return {'f_max': cls.default_params['f_max']}
 
-    def __init__(self):  # , num_herbs=0, num_carns=0):
+    def __init__(self):
         """Creates an instance of Landscape"""
 
         self.f = self.default_params['f_max']
@@ -106,12 +108,12 @@ class Landscape:
             newborn_animals = []
             for animal in species:
                 if animal.birth(len(species)):
-                    animal.weight -= animal.default_params['w_birth'] * \
-                        animal.default_params['xi']
                     if isinstance(animal, Herbivore):
                         newborn_animals.append(Herbivore())
                     elif isinstance(animal, Carnivore):
                         newborn_animals.append(Carnivore())
+                    animal.weight -= newborn_animals[-1].weight * \
+                        animal.default_params['xi']
             species.extend(newborn_animals)
 
     def weightloss(self):
