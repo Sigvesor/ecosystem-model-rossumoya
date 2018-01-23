@@ -4,7 +4,7 @@ __author__ = 'Sigve Sorensen', 'Filip Rotnes'
 __email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
 
 from math import exp as e
-from .animals import *
+from animals import *
 import random
 
 
@@ -251,19 +251,9 @@ class Landscape:
                             epsilon=neighbour.abundance_fodder_carn
                         ) for neighbour in neighbours]
 
-                    #if sum(prop_list) == 0:                                     # denne delen er litt feil...       # hva hvis sum(prop_list)==0 ?
-                    #    if isinstance(animal, Herbivore):
-                    #        self.new_pop[0].append(animal)
-                    #    elif isinstance(animal, Carnivore):
-                    #        self.new_pop[1].append(animal)
-                    #    break
-                    try: prob_list = [prop / sum(prop_list) for prop in prop_list]   # normalisér
-                    except:
-                        if isinstance(animal, Herbivore):
-                            self.new_pop[0].append(animal)
-                        elif isinstance(animal, Carnivore):
-                            self.new_pop[1].append(animal)
-                        break
+
+                    prob_list = [prop / sum(prop_list) for prop in prop_list]   # normalisér
+
                     p = random.random()                                         # plassér
                     i = 0
                     p_sum = 0

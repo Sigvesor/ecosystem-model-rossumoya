@@ -190,17 +190,21 @@ class Island:
         :return: list of valid landscape objects, for migration.
         """
 
-        valid_moves = []
+        possible_moves = []
         x, y = pos
-
+        illegal = (Ocean, Mountain)
         if x + 1 < len(self.map):
-            valid_moves.append(self.map[x + 1, y])
+            possible_moves.append(self.map[x + 1, y])
         if x - 1 >= 0:
-            valid_moves.append(self.map[x - 1, y])
+            possible_moves.append(self.map[x - 1, y])
         if y + 1 < len(self.map[0]):
-            valid_moves.append(self.map[x, y + 1])
+            possible_moves.append(self.map[x, y + 1])
         if y - 1 >= 0:
-            valid_moves.append(self.map[x, y - 1])
+            possible_moves.append(self.map[x, y - 1])
+        valid_moves = []
+        for move in possible_moves:
+            if not isinstance(move, illegal):
+                valid_moves.append(move)
         return valid_moves
 
     def migrate_island(self):
