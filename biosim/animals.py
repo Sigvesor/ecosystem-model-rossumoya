@@ -203,7 +203,7 @@ class Herbivore(Animal):  # test that will starve in desert
         self.weight += available_fodder * self.default_params['beta']
 
     def new_grassland(self, neighbours):
-        props = [n.propensity(self, n.abundance_fodder_c) for n in neighbours]
+        props = [n.propensity(self, n.abundance_fodder_h) for n in neighbours]
         prob_list = [prop / sum(props) for prop in props]
         p = random.random()
         i = 0
@@ -237,7 +237,7 @@ class Carnivore(Animal):    # test that will starve w/o herbs
 
         self.weight += available_meat * self.default_params['beta']
 
-    def new_huntingground(self, neighbours):
+    def new_hunting_land(self, neighbours):
         props = [n.propensity(self, n.abundance_fodder_c) for n in neighbours] # [neighbours[i].propensity(self, epsilons[i]) for i in range(len(epsilons))]
         prob_list = [prop / sum(props) for prop in props]
         p = random.random()
