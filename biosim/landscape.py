@@ -146,7 +146,11 @@ class Landscape:
                         desc = False
 
     def eat_request_herb(self):
-        """Herbivores eat in the landscape, in order of fitness."""
+
+        """
+        Herbivores and Carnivores eats in the landscape, in order of fitness.
+        The least fit herbivores gets eaten first.
+        """
 
         for herb in self.pop_animals[0]:
             request = herb.default_params['F']
@@ -165,9 +169,10 @@ class Landscape:
         """
 
         carns = self.pop_animals[1]
-        for carn in carns[::-1]:
 
-            self.pop_animals[0] = carn.eating(self.pop_anima_222f[0])
+        for carn in carns:
+
+            self.pop_animals[0] = carn.eating(self.pop_animals[0])
 
     def regenerate(self):
         """If possible, regenerates fodder in the landscape."""
