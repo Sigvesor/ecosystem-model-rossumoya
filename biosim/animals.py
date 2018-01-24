@@ -5,7 +5,7 @@ __email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
 
 import random
 from math import exp as e
-from landscape import *
+from biosim.landscape import *
 
 
 class Animal:
@@ -58,7 +58,7 @@ class Animal:
                 elif key in tuples and new_params[key] < 0:
                     raise ValueError(str(key) + ' must have positive value.')
 
-                elif key in fractions and not (0 < new_params[key] < 1):
+                elif key in fractions and not (0 <= new_params[key] <= 1):
                     raise ValueError(str(key) + ' must have value from ' 
                                                 '0 to 1.')
 
