@@ -37,6 +37,11 @@ class BioSim:
 
     @property
     def population_by_cell(self):
+        """
+        Returns a DataFrame containing the number of each species per cell
+        Columns: 'x', 'y', 'Herbivores', 'Carnivores'
+        :return: pandas.DataFrame
+        """
         pop = pd.DataFrame(self.island.population_distribution,
                            columns=['Herbivores', 'Carnivores'])
         self.pop_by_cell.update(pop)
@@ -44,16 +49,28 @@ class BioSim:
 
     @property
     def population_by_species(self):
+        """
+        Returns a dictionary containing the number of animals for each species.
+        :return: dict
+        """
         herbs = self.herb_list[-1]
         carns = self.carn_list[-1]
         return {'Herbivores': herbs,'Carnivores': carns}
 
     @property
     def years_passed(self):
+        """
+        Returns the number of years the BioSim instance has simulated.
+        :return: int
+        """
         return self.year
 
     @property
     def total_animals(self):
+        """
+        Returns the total number of animals
+        :return: int
+        """
         return self.herb_list[-1] + self.carn_list[-1]
 
     def simulate(self, num_steps, vis_steps=None, img_steps=None):
@@ -70,6 +87,12 @@ class BioSim:
         # return [herb_list, carn_list]
 
     def add_population(self, population=None):
+        """
+        Adds populations from a list of dictionaries.
+
+        The keys of the dictionaries have to be 'species', 'age' and 'weight'
+        :param population: list
+        """
         self.island.distribute_animals(population)
 
     def sim_plot(self):

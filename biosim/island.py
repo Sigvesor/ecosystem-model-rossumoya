@@ -244,6 +244,13 @@ class Island:
 
     @property
     def population_distribution(self):
+        """
+        Returns the population of herbivores and carnivores for each cell.
+
+        Cells are listed row by row.
+
+        :return: np.array([[herbivore, carnivore] for cell in row ...]
+        """
         total_pop_herbs = []
         total_pop_carns = []
 
