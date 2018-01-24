@@ -103,7 +103,7 @@ class BioSim:
         :param img_steps: int
         """
 
-
+        self.new_sim = True
         for step in range(num_steps):
             sim_cyc = self.island.cycle()
             self.herb_list.append(sim_cyc[0])
@@ -113,7 +113,6 @@ class BioSim:
                 plt.ion()
                 self.sim_plot()
             self.year += 1
-            plt.pause(0.000001)
 
 
     def add_population(self, population=None):
@@ -128,22 +127,21 @@ class BioSim:
 
     def sim_plot(self):
 
-        year0 = self.years_passed < 1
-        print(self.years_passed)
-        if year0:
+        if self.new_sim:
             fig = plt.figure()
             self.ax_herb = fig.add_subplot(223)
             plt.title('Herbivore density')
             self.ax_carn = fig.add_subplot(224)
         self.heat_map()
-        if year0:
+        if self.new_sim:
             self.ax_map = fig.add_subplot(222)
         self.plot_map()
-        if year0:
+        if self.new_sim:
             self.ax_graph = fig.add_subplot(221)
         self.plot_pop_density()
-        plt.title(str(self.years_passed))
-        #plt.pause(0.0001)
+        plt.title('Year: '+str(self.years_passed))
+        plt.pause(0.000001)
+        self.new_sim = False
 
     def heat_map(self):
         """
