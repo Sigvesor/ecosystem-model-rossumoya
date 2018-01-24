@@ -9,10 +9,28 @@ from math import exp as e
 __author__ = 'Sigve Sorensen', 'Filip Rotnes'
 __email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
 
+"""
+This program will simulate the ecosystem of Rossumøya
+"""
+
 
 class BioSim:
 
+    """
+    This class instantiates an ecosystem simulation
+    """
+
+    version = '1.0'
+
     def __init__(self, island_map, ini_pop, seed):
+        """
+        Creates the variables associated with the class
+
+        :param island_map: multi line string
+        :param ini_pop: initial population in simulation
+        :param seed: random seed
+        """
+
         random.seed(seed)
         self.year = 0
         self.ini_pop = ini_pop
@@ -34,6 +52,7 @@ class BioSim:
         """
         Returns a DataFrame containing the number of each species per cell
         Columns: 'x', 'y', 'Herbivores', 'Carnivores'
+
         :return: pandas.DataFrame
         """
         pop = pd.DataFrame(self.island.population_distribution,
@@ -45,29 +64,45 @@ class BioSim:
     def population_by_species(self):
         """
         Returns a dictionary containing the number of animals for each species.
+
         :return: dict
         """
+
         herbs = self.herb_list[-1]
         carns = self.carn_list[-1]
-        return {'Herbivores': herbs,'Carnivores': carns}
+        return {'Herbivores': herbs, 'Carnivores': carns}
 
     @property
     def years_passed(self):
         """
-        Returns the number of years the BioSim instance has simulated.
+        Returns the number of years the BioSim instance has simulated
+
         :return: int
         """
+
         return self.year
 
     @property
     def total_animals(self):
         """
         Returns the total number of animals
+
         :return: int
         """
+
         return self.herb_list[-1] + self.carn_list[-1]
 
+
     def simulate(self, num_steps, vis_steps=1, img_steps=None):
+
+        """
+        Conducting the simulation, deciding number of cycles.
+
+        :param num_steps: int
+        :param vis_steps: int
+        :param img_steps: int
+        """
+
 
         for step in range(num_steps):
             sim_cyc = self.island.cycle()
@@ -79,23 +114,20 @@ class BioSim:
                 self.sim_plot()
             self.year += 1
             plt.pause(0.000001)
-        # print(herb_list)
-        # print(carn_list)
-        #fig = plt.figure()
 
-        # return [herb_list, carn_list]
 
     def add_population(self, population=None):
         """
-        Adds populations from a list of dictionaries.
-
+        Adds populations from a list of dictionaries
         The keys of the dictionaries have to be 'species', 'age' and 'weight'
+
         :param population: list
         """
+
         self.island.distribute_animals(population)
 
     def sim_plot(self):
-        #plt.ion()
+
         year0 = self.years_passed < 1
         print(self.years_passed)
         if year0:
@@ -114,6 +146,9 @@ class BioSim:
         #plt.pause(0.0001)
 
     def heat_map(self):
+        """
+        Returns a heat-map, describing population density and movements
+        """
         pop_array_h = self.island.population_array()
         self.ax_herb.imshow(pop_array_h, cmap='Greens', interpolation='nearest')
 
@@ -122,8 +157,11 @@ class BioSim:
         plt.title('Carnivore density')
 
     def plot_pop_density(self):
+        """
+        Plots the population density for each
+        """
         self.ax_graph.plot(range(len(self.herb_list)), self.herb_list, 'r-',
-                       range(len(self.carn_list)), self.carn_list, 'b-')
+                           range(len(self.carn_list)), self.carn_list, 'b-')
         plt.title('Total populations per year')
 
     def plot_map(self):
@@ -135,7 +173,6 @@ class BioSim:
         rbg_map = [[rbg_value[x] for x in row] for row in self.island.map_str]
         self.ax_map.imshow(rbg_map)
         plt.title('Island map')
-
 
 
 if __name__ == "__main__":
@@ -165,7 +202,7 @@ if __name__ == "__main__":
                            'weight': 20} for _ in range(40)]}]
     sim = BioSim(ini_pop=ini_herbs, island_map=kart, seed=12634)
 
-    sim.simulate(100, vis_steps=5)
+    sim.simulate(30, vis_steps=5)
     sim.add_population(ini_carns)
     sim.simulate(400)
     sim.sim_plot()

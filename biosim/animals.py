@@ -10,8 +10,7 @@ from biosim.landscape import *
 
 class Animal:
     """
-    Animal which eat, age, reproduce,
-    migrate and die with probabilities.
+    This class instantiates an animal
     """
 
     default_params = {'w_birth': None, 'sigma_birth': None, 'beta': None,
@@ -23,19 +22,14 @@ class Animal:
     @classmethod
     def set_parameters(cls, new_params):
         """
-        Set class parameters. Checks if input is in the right format.
+        Set class parameters and checks if input is in the right format
 
-        Parameters
-        ----------
-        new_params : dict
+        :type cls: Animal
+        :param new_params: dict
             Legal keys: 'w_birth', 'sigma_birth', 'beta', 'a_half',
                         'phi_age', 'w_half', 'phi_weight', 'mu', 'lambda',
                         'gamma', 'zeta', 'xi', 'omega', 'F',
-                        'eta', 'DeltaPhiMax'.
-
-        Raises
-        ------
-        ValueError, KeyError
+                        'eta', 'DeltaPhiMax'
         """
 
         tuples = ('w_birth', 'w_half', 'a_half', 'gamma',
@@ -68,14 +62,17 @@ class Animal:
     @classmethod
     def get_params(cls):
         """
-        Get class parameters.
-        :return: Dict, with class parameters.
+        Get class parameters
+
+        :return: dict
         """
 
         return cls.default_params
 
     def __init__(self, weight=default_params['w_birth'], age=0.0):
-        """Create Animal with age 0 and birth weight."""
+        """
+        Creates the variables associated with the class
+        """
 
         self.weight = random.normalvariate(
             weight, self.default_params['sigma_birth'])
@@ -86,14 +83,17 @@ class Animal:
                          (self.weight - self.default_params['w_half'])))
 
     def ages(self):
-        """Animal ages by one cycle."""
+        """
+        Animal ages by one cycle
+        """
 
         self.age += 1
 
     def dies(self):
         """
-        Decide if Animal dies.
-        :return: Bool, True if Animal dies.
+        Decides if Animal dies
+
+        :return: bool
         """
 
         p_death = self.default_params['omega'] * (1 - self.phi)
@@ -101,8 +101,9 @@ class Animal:
 
     def fitness(self):
         """
-        Calculates the fitness of the Animal.
-        :return: Float, between [0, 1]
+        Calculates the fitness of the Animal
+
+        :return: float
         """
 
         self.phi = 1 / (1 + e(self.default_params['phi_age'] *
@@ -114,9 +115,10 @@ class Animal:
 
     def birth(self, n_animals):
         """
-        Decides whether an Animal will give birth.
-        :param n_animals: Total number of that species, in that landscape.
-        :return: Bool, True if animal gives birth.
+        Decides whether an Animal will give birth or not
+
+        :param n_animals: int
+        :return: bool
         """
 
         if self.weight < self.default_params['zeta'] *\
@@ -132,29 +134,44 @@ class Animal:
 
     def weightloss(self):
         """
-        Updates the weight, following a weight loss,
-        of an Animal in a cycle.
+        Updates the weight, following an animal's weightloss during cycle
         """
 
         self.weight -= self.default_params['eta'] * self.weight
 
     @property
     def migrating(self):
+        """
+        Decides whether the animal is ready to migrate, or not
+
+        :return: bool
+        """
         return random.random() < self.default_params['mu'] * self.phi
 
     @property
     def is_herbivore(self):
+        """
+        Returns whether the animal is a Herbivore, or not
+
+        :return: bool
+        """
+
         return isinstance(self, Herbivore)
 
     @property
     def is_carnivore(self):
+        """
+        Returns whether the animal is a Carnivore, or not
+
+        :return: bool
+        """
+
         return isinstance(self, Carnivore)
 
 
 class Herbivore(Animal):
     """
-    Herbivore. Underclass of superclass Animal,
-    with its default parameters.
+    Underclass of superclass Animal, Herbivore, with its default parameters.
     """
 
     default_params = {'w_birth': 8.0, 'sigma_birth': 1.5, 'beta': 0.9,
@@ -164,18 +181,28 @@ class Herbivore(Animal):
                       'omega': 0.4, 'F': 10.0, 'eta': 0.05}
 
     def __init__(self, weight=None, age=0):
-        """Creates a Herbivore with age 0."""
+        """
+        Creates the variables associated with the underclass
+        """
 
         if weight is None:
             weight = self.default_params['w_birth']
         Animal.__init__(self, weight=weight, age=age)
 
     def eating(self, available_fodder):
-        """Updates the weight of Herbivore after eating."""
+        """
+        Updates the weight of Herbivore after eating
+        """
 
         self.weight += available_fodder * self.default_params['beta']
 
     def new_grassland(self, neighbours):
+        """
+        Decides where the migrating herbivore will migrate
+
+        :param neighbours: list
+        :return: list
+        """
         props = [n.propensity(self, n.abundance_fodder_h) for n in neighbours]
         prob_list = [prop / sum(props) for prop in props]
         p = random.random()
@@ -187,8 +214,7 @@ class Herbivore(Animal):
 
 class Carnivore(Animal):
     """
-    Carnivore. Underclass of superclass Animal,
-    with its default parameters.
+    Underclass of superclass Animal, Carnivore, with its default parameters.
     """
 
     default_params = {'w_birth': 6.0, 'sigma_birth': 1.0, 'beta': 0.75,
@@ -199,7 +225,9 @@ class Carnivore(Animal):
                       'eta': 0.125, 'DeltaPhiMax': 10.0}
 
     def __init__(self, weight=None, age=0):
-        """Creates a Carnivore with age 0."""
+        """
+        Creates the variables associated with the underclass
+        """
 
         if weight is None:
             weight = self.default_params['w_birth']
@@ -207,9 +235,10 @@ class Carnivore(Animal):
 
     def prob_eating(self, herbivore):
         """
-        :param herbivore: Herbivore being tested for its probability of
-            being eaten.
-        :return:
+        Decides the probability of carnivore eating herbivore
+
+        :param herbivore: object
+        :return: float
         """
 
         delta_phi = self.phi - herbivore.phi
@@ -223,16 +252,22 @@ class Carnivore(Animal):
             return 1
 
     def eating(self, herbs):
-        """Updates the weight of Carnivore after eating."""
+        """
+        Updates the weight of carnivore after eating herbivore(s)
+        Returns a list of surviving herbivores
+
+        :param herbs: list
+        :return: list
+        """
 
         survivors = []
-        _F = 0
+        eaten = 0
 
         for herb in herbs[::-1]:
-            if _F < self.default_params['F'] \
+            if eaten < self.default_params['F'] \
                     and random.random() < self.prob_eating(herb):
                 self.weight += self.default_params['beta'] * herb.weight
-                _F += herb.weight
+                eaten += herb.weight
 
                 self.phi = self.fitness()
 
@@ -242,6 +277,12 @@ class Carnivore(Animal):
         return survivors
 
     def new_hunting_land(self, neighbours):
+        """
+        Decides where the migrating carnivore will migrate
+
+        :param neighbours: list
+        :return: list
+        """
         props = [n.propensity(self, n.abundance_fodder_c) for n in neighbours]
         prob_list = [prop / sum(props) for prop in props]
         p = random.random()
