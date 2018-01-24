@@ -7,7 +7,9 @@ from island import *
 from landscape import *
 from animals import *
 from map_constructor import *
-
+import pandas as pd
+import numpy as np
+from math import exp as e
 __author__ = 'Sigve Sorensen', 'Filip Rotnes'
 __email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
 
@@ -16,11 +18,37 @@ class BioSim:
 
     def __init__(self, island_map, ini_pop, seed):
         random.seed(seed)
-        self.ini_pop = ini_pop
+        self.year = 0
+        self.ini_pop = ini_pop # trengs denne? ee nei
         self.island = Island()
         self.island.populated_island(island_map, ini_pop)
-        self.herb_list = [self.island.total_island_population[0]]
-        self.carn_list = [self.island.total_island_population[1]]
+        n_rows, n_cols = len(self.island.map_str), len(self.island.map[0])
+        self.herb_list = [self.island.total_island_population[0]]   # disse trenger ikke være self, kanskje?
+        self.carn_list = [self.island.total_island_population[1]]   # disse trenger ikke være self, kanskje?
+        #self.pop_by_species = {'Herbivores': self.herb_list[-1],    # disse trenger ikke være self, kanskje?
+        #                       'Carnivores': self.carn_list[-1]}
+        empty_df = [[i+1, j+1, 0, 0] for j in range(n_cols)
+                    for i in range(n_rows)]
+        df_cols = ['x', 'y','Herbivores', 'Carnivores']
+        self.pop_by_cell = pd.DataFrame(data= empty_df, columns=df_cols)
+
+    @property
+    def population_by_cell(self):
+        return self.pop_by_cell
+
+    @property
+    def population_by_species(self):
+        herbs = self.herb_list[-1]
+        carns = self.carn_list[-1]
+        return {'Herbivores': herbs,'Carnivores': carns}
+
+    @property
+    def years_passed(self):
+        return self.year
+
+    @property
+    def total_animals(self):
+        return self.herb_list[-1] + self.carn_list[-1]
 
     def simulate(self, num_steps, vis_steps=None, img_steps=None):
 
@@ -28,6 +56,7 @@ class BioSim:
             sim_cyc = self.island.cycle()
             self.herb_list.append(sim_cyc[0])
             self.carn_list.append(sim_cyc[1])
+            self.year += 1
         # print(herb_list)
         # print(carn_list)
         #fig = plt.figure()
