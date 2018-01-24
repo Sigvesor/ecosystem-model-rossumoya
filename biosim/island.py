@@ -249,9 +249,13 @@ class Island:
         #    species = pop_animals[#0]
         #else:
         #    species = pop_animals[0]
+        if herbivore:
+            i=0
+        else:
+            i=1
         for row in range(self.map.shape[1]):
             for cell in range(self.map.shape[0]):
-                pop_array[cell, row] = len(self.map[cell, row].pop_animals[0])
+                pop_array[cell, row] = len(self.map[cell, row].pop_animals[i])
         return pop_array
 
 
