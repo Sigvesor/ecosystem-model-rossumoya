@@ -9,20 +9,23 @@ import random
 
 
 class Island:
-    """An island population with several possible landscapes."""
+    """
+    This class instantiates an island
+    """
 
     def __init__(self):
         """
-        Parameters:
-        ----------
-        n_pops : int
-            number of Herbivore populations
+        Creates the variables associated with the class
         """
+
         self.map_str = None
         self.map = None
 
     def cycle(self):
-        """Adds one cycle to island population."""
+        """
+        Conducts one cycle on the island
+        """
+
         for row in self.map:
             for cell in row:
 
@@ -45,13 +48,15 @@ class Island:
 
         return self.total_island_population
 
-    def check_string_map(self, string_map):
+    @staticmethod
+    def check_string_map(string_map):
         """
         Checks if the multi line string containing landscape distribution
-        contains invalid landscape types.
+        contains invalid landscape types
 
-        :param string_map: multi line string describing island.
+        :param string_map: multi line string describing island
         """
+
         landscape_error = ValueError('Wrong input for island map, \n'
                                      'D = Desert \nJ = Jungle \nM = Mountain \n'
                                      'O = Ocean \nS = Savannah\n')
@@ -77,11 +82,12 @@ class Island:
 
     def map_str_manager(self, map_str=None):
         """
-        Creates a numpy array map with landscape cells.
+        Control for multi line string map format
 
-        :param map_str: multi line string describing island.
-        :return: numpy array with landscape cells.
+        :param map_str: multi line string
+        :return: list
         """
+
         standard_map = """OOOOOOOOOOOOOOOOOOOOO
         OOOOOOOOSMMMMJJJJJJJO
         OSSSSSJJJJMMJJJJJJJOO
@@ -95,16 +101,25 @@ class Island:
         OOSSSSJJJJJJJJOOOOOOO
         OOOSSSSJJJJJJJOOOOOOO
         OOOOOOOOOOOOOOOOOOOOO"""
+
         if not map_str:
             island_map = standard_map
         else:
             island_map = map_str
-        self.map_str = island_map.replace(" ", "").splitlines()
 
+        self.map_str = island_map.replace(" ", "").splitlines()
         self.check_string_map(string_map=self.map_str)
+
         return self.map_str
 
     def map_from_string(self, map_str=None):
+        """
+        Creates the numpy array map
+
+        :param map_str: multi line string
+        :return: numpy.ndarray
+        """
+
         island_map = self.map_str_manager(map_str)
         self.map = np.empty(
             (len(island_map), len(island_map[0])), dtype=object)
@@ -124,9 +139,9 @@ class Island:
 
     def distribute_animals(self, ini_pop=None):
         """
-        Puts Herbivores and Carnivores into their respective cells in map.
+        Puts Herbivores and Carnivores into their respective cells in map
 
-        :param ini_pop: list of dictionaries containing location/population.
+        :param ini_pop: list of dictionaries
         """
 
         ini_herbs = [{'loc': (10, 10),
@@ -175,13 +190,13 @@ class Island:
 
     def get_random_landscapes(self):
         """
-        Creates a list of randomized landscapes from the numpy array map.
+        Creates a list of randomized landscapes from the numpy array map
 
-        :return: list of landscapes
+        :return: list
         """
 
         array_list = self.map.tolist()
-        land_list = [j for i in array_list for j in i]
+        land_list = [row for col in array_list for row in col]
 
         random.shuffle(land_list)
 
@@ -189,10 +204,11 @@ class Island:
 
     def get_surrounding_landscapes(self, pos):
         """
-        Collects a cell's neighbour cells, which are valid for migration.
+        Collects a cell's neighbouring cells
+        Returns a list of valid cells for migration
 
-        :param pos: cell coordinates for cell in numpy array map.
-        :return: list of valid landscape objects, for migration.
+        :param pos: tuple (cell coordinates)
+        :return: list
         """
 
         possible_moves = []
@@ -213,7 +229,9 @@ class Island:
         return valid_moves
 
     def migrate_island(self):
-        """Iterates through map and initiates migration for each landscape."""
+        """
+        Iterates through map and initiates migration for each landscape
+        """
 
         land_list = self.get_random_landscapes()
 
@@ -233,17 +251,22 @@ class Island:
 
     def populated_island(self, map=None, ini_pop=None):
         """
-        Populates island with animals.
+        Populates the island with animals
 
-        :param map: map from multi line string, numpy array
-        :param ini_pop: initial population of animals
+        :param map: multi line string (map)
+        :param ini_pop: list of dictionaries
         """
 
         self.map = self.map_from_string(map)
         self.distribute_animals(ini_pop)
 
-
     def population_array(self, herbivore=True):
+        """
+        Returns a population array
+        :param herbivore: bool
+        :return: numpy.ndarray
+        """
+
         pop_array = np.zeros(self.map.shape)
         #if herbivore:
         #    species = pop_animals[#0]
@@ -254,17 +277,15 @@ class Island:
                 pop_array[cell, row] = len(self.map[cell, row].pop_animals[0])
         return pop_array
 
-
-
     @property
     def population_distribution(self):
         """
-        Returns the population of herbivores and carnivores for each cell.
+        Returns the population of herbivores and carnivores for each cell
+        Cells are listed row by row
 
-        Cells are listed row by row.
-
-        :return: np.array([[herbivore, carnivore] for cell in row ...]
+        :return: numpy.ndarray
         """
+
         total_pop_herbs = []
         total_pop_carns = []
 
@@ -277,11 +298,14 @@ class Island:
     @property
     def total_island_population(self):
         """
-        Calculates total population on island.
+        Calculates total population on the island
 
-        :return: tuple containing total number of each animal on island.
+        :return: tuple
         """
+
         pop = self.population_distribution
         herbs = [pop[i][0] for i in range(len(pop))]
         carns = [pop[i][1] for i in range(len(pop))]
-        return (sum(herbs), sum(carns))
+
+        return sum(herbs), sum(carns)
+
