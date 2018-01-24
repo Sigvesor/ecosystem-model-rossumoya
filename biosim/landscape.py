@@ -20,8 +20,8 @@ class Landscape:
         """
         Sets class parameters from dictionary
 
+        :type cls: Landscape
         :param new_params: dict
-        :raises: ValueError, KeyError
         """
 
         for key in new_params:
