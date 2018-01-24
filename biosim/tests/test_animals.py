@@ -30,17 +30,13 @@ def test_biocycle_herbivore():
 def test_biocycle_carnivore():
     """
     Tests that an instance of Carnivore is a Carnivore, starts with
-    age 0, ages correctly, eats and puts on weight, and loose weight
-    following a weight loss.
+    age 0, ages correctly and loose weight following a weight loss.
     """
 
     carnivore = Carnivore()
     assert isinstance(carnivore, Carnivore)
     assert carnivore.age == 0
     carnivore.ages()
-    w0 = carnivore.weight
-    carnivore.eating(100)
-    assert carnivore.weight > w0
     assert carnivore.age == 1
     w0 = carnivore.weight
     carnivore.weightloss()
@@ -135,4 +131,13 @@ def test_death_herb():
     assert not herb.dies()
 
 
+def test_migrating():
+    """
+    Tests if a herbivore is ready to migrate if it has
+    the constitution for it.
+    """
 
+    Herbivore.set_parameters({'mu': 1})
+    herb = Herbivore()
+    herb.phi = 1
+    assert herb.migrating
