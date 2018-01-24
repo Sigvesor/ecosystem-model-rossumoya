@@ -243,22 +243,24 @@ class Island:
         self.distribute_animals(ini_pop)
 
     @property
+    def population_distribution(self):
+        total_pop_herbs = []
+        total_pop_carns = []
+
+        for row in self.map:
+            for cell in row:
+                total_pop_herbs.append(len(cell.pop_animals[0]))
+                total_pop_carns.append(len(cell.pop_animals[1]))
+        return np.column_stack((total_pop_herbs, total_pop_carns))
+
+    @property
     def total_island_population(self):
         """
         Calculates total population on island.
 
         :return: tuple containing total number of each animal on island.
         """
-
-        total_pop_herbs = []
-        total_pop_carns = []
-
-        for row in self.map:
-            for cell in row:
-
-                total_pop_herbs.append(len(cell.pop_animals[0]))
-                total_pop_carns.append(len(cell.pop_animals[1]))
-
-        total_pop = (sum(total_pop_herbs), sum(total_pop_carns))
-
-        return total_pop
+        pop = self.population_distribution
+        herbs = [pop[i][0] for i in range(len(pop))]
+        carns = [pop[i][1] for i in range(len(pop))]
+        return (sum(herbs), sum(carns))

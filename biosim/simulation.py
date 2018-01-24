@@ -27,13 +27,19 @@ class BioSim:
         self.carn_list = [self.island.total_island_population[1]]   # disse trenger ikke være self, kanskje?
         #self.pop_by_species = {'Herbivores': self.herb_list[-1],    # disse trenger ikke være self, kanskje?
         #                       'Carnivores': self.carn_list[-1]}
+        df_cols = ['x', 'y', 'Herbivores', 'Carnivores']
+        pop = pd.DataFrame(self.island.population_distribution,
+                           columns= df_cols[2:4])
         empty_df = [[i+1, j+1, 0, 0] for j in range(n_cols)
                     for i in range(n_rows)]
-        df_cols = ['x', 'y','Herbivores', 'Carnivores']
         self.pop_by_cell = pd.DataFrame(data= empty_df, columns=df_cols)
+        self.pop_by_cell.update(pop)
 
     @property
     def population_by_cell(self):
+        pop = pd.DataFrame(self.island.population_distribution,
+                           columns=['Herbivores', 'Carnivores'])
+        self.pop_by_cell.update(pop)
         return self.pop_by_cell
 
     @property
