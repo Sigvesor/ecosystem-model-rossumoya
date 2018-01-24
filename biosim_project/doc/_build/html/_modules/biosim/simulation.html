@@ -1,0 +1,304 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>biosim.simulation &#8212; --Modelling the Ecosystem of Rossumøya-- 1.0.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for biosim.simulation</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="c1">#from biosim.landscape import *</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">from</span> <span class="nn">.island</span> <span class="k">import</span> <span class="o">*</span>
+<span class="c1">#from landscape import *</span>
+<span class="c1">#from animals import *</span>
+<span class="c1">#from map_constructor import *</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="c1">#from math import exp as e</span>
+<span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;Sigve Sorensen&#39;</span><span class="p">,</span> <span class="s1">&#39;Filip Rotnes&#39;</span>
+<span class="n">__email__</span> <span class="o">=</span> <span class="s1">&#39;sigvsore@nmbu.no&#39;</span><span class="p">,</span> <span class="s1">&#39;firo@nmbu.no&#39;</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This program will simulate the ecosystem of Rossumøya</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="BioSim"><a class="viewcode-back" href="../../simulation.html#biosim.simulation.BioSim">[docs]</a><span class="k">class</span> <span class="nc">BioSim</span><span class="p">:</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class instantiates an ecosystem simulation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">version</span> <span class="o">=</span> <span class="s1">&#39;1.0&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">island_map</span><span class="p">,</span> <span class="n">ini_pop</span><span class="p">,</span> <span class="n">seed</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates the variables associated with the class</span>
+
+<span class="sd">        :param island_map: multi line string</span>
+<span class="sd">        :param ini_pop: initial population in simulation</span>
+<span class="sd">        :param seed: random seed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">year</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ini_pop</span> <span class="o">=</span> <span class="n">ini_pop</span> <span class="c1"># trengs denne? ee nei</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">island</span> <span class="o">=</span> <span class="n">Island</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">island</span><span class="o">.</span><span class="n">populated_island</span><span class="p">(</span><span class="n">island_map</span><span class="p">,</span> <span class="n">ini_pop</span><span class="p">)</span>
+        <span class="n">n_rows</span><span class="p">,</span> <span class="n">n_cols</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">island</span><span class="o">.</span><span class="n">map_str</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">island</span><span class="o">.</span><span class="n">map</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">herb_list</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">island</span><span class="o">.</span><span class="n">total_island_population</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>   <span class="c1"># disse trenger ikke være self, kanskje?</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">carn_list</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">island</span><span class="o">.</span><span class="n">total_island_population</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>   <span class="c1"># disse trenger ikke være self, kanskje?</span>
+        <span class="c1">#self.pop_by_species = {&#39;Herbivores&#39;: self.herb_list[-1],    # disse trenger ikke være self, kanskje?</span>
+        <span class="c1">#                       &#39;Carnivores&#39;: self.carn_list[-1]}</span>
+        <span class="n">df_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;Herbivores&#39;</span><span class="p">,</span> <span class="s1">&#39;Carnivores&#39;</span><span class="p">]</span>
+        <span class="n">pop</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">island</span><span class="o">.</span><span class="n">population_distribution</span><span class="p">,</span>
+                           <span class="n">columns</span><span class="o">=</span> <span class="n">df_cols</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">])</span>
+        <span class="n">empty_df</span> <span class="o">=</span> <span class="p">[[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_cols</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_rows</span><span class="p">)]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pop_by_cell</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span> <span class="n">empty_df</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">df_cols</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pop_by_cell</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">pop</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">population_by_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a DataFrame containing the number of each species per cell</span>
+<span class="sd">        Columns: &#39;x&#39;, &#39;y&#39;, &#39;Herbivores&#39;, &#39;Carnivores&#39;</span>
+
+<span class="sd">        :return: pandas.DataFrame</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">pop</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">island</span><span class="o">.</span><span class="n">population_distribution</span><span class="p">,</span>
+                           <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Herbivores&#39;</span><span class="p">,</span> <span class="s1">&#39;Carnivores&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pop_by_cell</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">pop</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pop_by_cell</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">population_by_species</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a dictionary containing the number of animals for each species.</span>
+
+<span class="sd">        :return: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">herbs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">herb_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">carns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">carn_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;Herbivores&#39;</span><span class="p">:</span> <span class="n">herbs</span><span class="p">,</span> <span class="s1">&#39;Carnivores&#39;</span><span class="p">:</span> <span class="n">carns</span><span class="p">}</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">years_passed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the number of years the BioSim instance has simulated</span>
+
+<span class="sd">        :return: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">year</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">total_animals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the total number of animals</span>
+
+<span class="sd">        :return: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">herb_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">carn_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+<div class="viewcode-block" id="BioSim.simulate"><a class="viewcode-back" href="../../simulation.html#biosim.simulation.BioSim.simulate">[docs]</a>    <span class="k">def</span> <span class="nf">simulate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_steps</span><span class="p">,</span> <span class="n">vis_steps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">img_steps</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Conducting the simulation, deciding number of cycles.</span>
+
+<span class="sd">        :param num_steps: int</span>
+<span class="sd">        :param vis_steps: int</span>
+<span class="sd">        :param img_steps: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_steps</span><span class="p">):</span>
+            <span class="n">sim_cyc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">island</span><span class="o">.</span><span class="n">cycle</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">herb_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sim_cyc</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">carn_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sim_cyc</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">year</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">year</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">herb_list</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">carn_list</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BioSim.add_population"><a class="viewcode-back" href="../../simulation.html#biosim.simulation.BioSim.add_population">[docs]</a>    <span class="k">def</span> <span class="nf">add_population</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">population</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds populations from a list of dictionaries</span>
+<span class="sd">        The keys of the dictionaries have to be &#39;species&#39;, &#39;age&#39; and &#39;weight&#39;</span>
+
+<span class="sd">        :param population: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">island</span><span class="o">.</span><span class="n">distribute_animals</span><span class="p">(</span><span class="n">population</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BioSim.sim_plot"><a class="viewcode-back" href="../../simulation.html#biosim.simulation.BioSim.sim_plot">[docs]</a>    <span class="k">def</span> <span class="nf">sim_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plots the results of the simulation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">herb_list</span><span class="p">)),</span> <span class="bp">self</span><span class="o">.</span><span class="n">herb_list</span><span class="p">,</span> <span class="s1">&#39;r-&#39;</span><span class="p">,</span>
+                 <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">carn_list</span><span class="p">)),</span> <span class="bp">self</span><span class="o">.</span><span class="n">carn_list</span><span class="p">,</span> <span class="s1">&#39;b-&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="BioSim.heat_map"><a class="viewcode-back" href="../../simulation.html#biosim.simulation.BioSim.heat_map">[docs]</a>    <span class="k">def</span> <span class="nf">heat_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">herbivore</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a heat-map, describing population density and movements</span>
+
+<span class="sd">        :param herbivore: bool</span>
+<span class="sd">        :return: plot</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">herbivore</span><span class="p">:</span>
+            <span class="n">col</span> <span class="o">=</span> <span class="s1">&#39;Greens&#39;</span>
+            <span class="n">species</span> <span class="o">=</span> <span class="s1">&#39;Herbivores&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">col</span> <span class="o">=</span> <span class="s1">&#39;Reds&#39;</span>
+            <span class="n">species</span> <span class="o">=</span> <span class="s1">&#39;Carnivores&#39;</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">population_by_cell</span>
+
+        <span class="n">pop_array</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">island</span><span class="o">.</span><span class="n">population_array</span><span class="p">()</span>
+        <span class="n">heatmap</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">pop_array</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">col</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">heatmap</span></div>
+
+<div class="viewcode-block" id="BioSim.plot_pop_density"><a class="viewcode-back" href="../../simulation.html#biosim.simulation.BioSim.plot_pop_density">[docs]</a>    <span class="k">def</span> <span class="nf">plot_pop_density</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plots the population density</span>
+
+<span class="sd">        :return: plot</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">herb_list</span><span class="p">)),</span> <span class="bp">self</span><span class="o">.</span><span class="n">herb_list</span><span class="p">,</span> <span class="s1">&#39;r-&#39;</span><span class="p">,</span>
+                       <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">carn_list</span><span class="p">)),</span> <span class="bp">self</span><span class="o">.</span><span class="n">carn_list</span><span class="p">,</span> <span class="s1">&#39;b-&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">fig</span></div></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">timeit</span>
+
+    <span class="n">t0</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">default_timer</span><span class="p">()</span>
+
+    <span class="n">kart</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;OOOOOOOOOOOOOOOOOOOOO</span>
+<span class="s2">        OOOOOOOOSMMMMJJJJJJJO</span>
+<span class="s2">        OSSSSSJJJJMMJJJJJJJOO</span>
+<span class="s2">        OSSSSSSSSSMMJJJJJJOOO</span>
+<span class="s2">        OSSSSSJJJJJJJJJJJJOOO</span>
+<span class="s2">        OSSSSSJJJDDJJJSJJJOOO</span>
+<span class="s2">        OSSJJJJJDDDJJJSSSSOOO</span>
+<span class="s2">        OOSSSSJJJDDJJJSOOOOOO</span>
+<span class="s2">        OSSSJJJJJDDJJJJJJJOOO</span>
+<span class="s2">        OSSSSJJJJDDJJJJOOOOOO</span>
+<span class="s2">        OOSSSSJJJJJJJJOOOOOOO</span>
+<span class="s2">        OOOSSSSJJJJJJJOOOOOOO</span>
+<span class="s2">        OOOOOOOOOOOOOOOOOOOOO&quot;&quot;&quot;</span>
+
+    <span class="n">ini_herbs</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">&#39;loc&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span>
+                  <span class="s1">&#39;pop&#39;</span><span class="p">:</span> <span class="p">[{</span><span class="s1">&#39;species&#39;</span><span class="p">:</span> <span class="s1">&#39;Herbivore&#39;</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+                           <span class="s1">&#39;weight&#39;</span><span class="p">:</span> <span class="mi">20</span><span class="p">}</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">150</span><span class="p">)]}]</span>
+    <span class="n">ini_carns</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">&#39;loc&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span>
+                  <span class="s1">&#39;pop&#39;</span><span class="p">:</span> <span class="p">[{</span><span class="s1">&#39;species&#39;</span><span class="p">:</span> <span class="s1">&#39;Carnivore&#39;</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+                           <span class="s1">&#39;weight&#39;</span><span class="p">:</span> <span class="mi">20</span><span class="p">}</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">40</span><span class="p">)]}]</span>
+    <span class="n">sim</span> <span class="o">=</span> <span class="n">BioSim</span><span class="p">(</span><span class="n">ini_pop</span><span class="o">=</span><span class="n">ini_herbs</span><span class="p">,</span> <span class="n">island_map</span><span class="o">=</span><span class="n">kart</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">12634</span><span class="p">)</span>
+
+    <span class="n">sim</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+    <span class="n">sim</span><span class="o">.</span><span class="n">add_population</span><span class="p">(</span><span class="n">ini_carns</span><span class="p">)</span>
+    <span class="n">sim</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span><span class="mi">400</span><span class="p">)</span>
+    <span class="n">sim</span><span class="o">.</span><span class="n">sim_plot</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">timeit</span><span class="o">.</span><span class="n">default_timer</span><span class="p">()</span> <span class="o">-</span> <span class="n">t0</span><span class="p">)</span>
+    <span class="c1"># plt.show()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">--Modelling the Ecosystem of Rossumøya--</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Includes:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../animals.html">All about the Animals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../landscape.html">Landscapes, the building blocks.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../island.html">Making the Island, setting the scene.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../simulation.html">Simulating the Ecosystem</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Sigve Sørensen & Filip Rotnes.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

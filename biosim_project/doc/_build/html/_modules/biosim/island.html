@@ -1,0 +1,415 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>biosim.island &#8212; --Modelling the Ecosystem of Rossumøya-- 1.0.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for biosim.island</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;Sigve Sorensen&#39;</span><span class="p">,</span> <span class="s1">&#39;Filip Rotnes&#39;</span>
+<span class="n">__email__</span> <span class="o">=</span> <span class="s1">&#39;sigvsore@nmbu.no&#39;</span><span class="p">,</span> <span class="s1">&#39;firo@nmbu.no&#39;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">.landscape</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">random</span>
+
+
+<div class="viewcode-block" id="Island"><a class="viewcode-back" href="../../island.html#biosim.island.Island">[docs]</a><span class="k">class</span> <span class="nc">Island</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class instantiates an island</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates the variables associated with the class</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">map_str</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">map</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="Island.cycle"><a class="viewcode-back" href="../../island.html#biosim.island.Island.cycle">[docs]</a>    <span class="k">def</span> <span class="nf">cycle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Conducts one cycle on the island</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">row</span><span class="p">:</span>
+
+                <span class="n">cell</span><span class="o">.</span><span class="n">regenerate</span><span class="p">()</span>
+                <span class="n">cell</span><span class="o">.</span><span class="n">fitness_sort</span><span class="p">()</span>
+                <span class="n">cell</span><span class="o">.</span><span class="n">eat_request_herb</span><span class="p">()</span>
+                <span class="n">cell</span><span class="o">.</span><span class="n">eat_request_carn</span><span class="p">()</span>
+                <span class="n">cell</span><span class="o">.</span><span class="n">update_fitness</span><span class="p">()</span>
+                <span class="n">cell</span><span class="o">.</span><span class="n">reproduction</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">migrate_island</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">row</span><span class="p">:</span>
+
+                <span class="n">cell</span><span class="o">.</span><span class="n">aging</span><span class="p">()</span>
+                <span class="n">cell</span><span class="o">.</span><span class="n">weightloss</span><span class="p">()</span>
+                <span class="n">cell</span><span class="o">.</span><span class="n">update_fitness</span><span class="p">()</span>
+                <span class="n">cell</span><span class="o">.</span><span class="n">death</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_island_population</span></div>
+
+<div class="viewcode-block" id="Island.check_string_map"><a class="viewcode-back" href="../../island.html#biosim.island.Island.check_string_map">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">check_string_map</span><span class="p">(</span><span class="n">string_map</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks if the multi line string containing landscape distribution</span>
+<span class="sd">        contains invalid landscape types</span>
+
+<span class="sd">        :param string_map: multi line string describing island</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">landscape_error</span> <span class="o">=</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Wrong input for island map, </span><span class="se">\n</span><span class="s1">&#39;</span>
+                                     <span class="s1">&#39;D = Desert </span><span class="se">\n</span><span class="s1">J = Jungle </span><span class="se">\n</span><span class="s1">M = Mountain </span><span class="se">\n</span><span class="s1">&#39;</span>
+                                     <span class="s1">&#39;O = Ocean </span><span class="se">\n</span><span class="s1">S = Savannah</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">allowed_landscapes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;J&#39;</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;O&#39;</span><span class="p">,</span> <span class="s1">&#39;S&#39;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">string_map</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">row</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">cell</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">allowed_landscapes</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">landscape_error</span>
+
+        <span class="n">map_error</span> <span class="o">=</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The edges of the maps has to be Ocean only! </span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">end</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">string_map</span><span class="p">[</span><span class="n">end</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">cell</span> <span class="o">!=</span> <span class="s1">&#39;O&#39;</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">map_error</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">string_map</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">valid_ends</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;O&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">row</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;O&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">valid_ends</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">map_error</span>
+
+        <span class="n">row_lengths</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">row</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">string_map</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">max</span><span class="p">(</span><span class="n">row_lengths</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">min</span><span class="p">(</span><span class="n">row_lengths</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Each row in map must be of the same length! </span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Island.map_str_manager"><a class="viewcode-back" href="../../island.html#biosim.island.Island.map_str_manager">[docs]</a>    <span class="k">def</span> <span class="nf">map_str_manager</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">map_str</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Control for multi line string map format</span>
+
+<span class="sd">        :param map_str: multi line string</span>
+<span class="sd">        :return: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">standard_map</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;OOOOOOOOOOOOOOOOOOOOO</span>
+<span class="s2">        OOOOOOOOSMMMMJJJJJJJO</span>
+<span class="s2">        OSSSSSJJJJMMJJJJJJJOO</span>
+<span class="s2">        OSSSSSSSSSMMJJJJJJOOO</span>
+<span class="s2">        OSSSSSJJJJJJJJJJJJOOO</span>
+<span class="s2">        OSSSSSJJJDDJJJSJJJOOO</span>
+<span class="s2">        OSSJJJJJDDDJJJSSSSOOO</span>
+<span class="s2">        OOSSSSJJJDDJJJSOOOOOO</span>
+<span class="s2">        OSSSJJJJJDDJJJJJJJOOO</span>
+<span class="s2">        OSSSSJJJJDDJJJJOOOOOO</span>
+<span class="s2">        OOSSSSJJJJJJJJOOOOOOO</span>
+<span class="s2">        OOOSSSSJJJJJJJOOOOOOO</span>
+<span class="s2">        OOOOOOOOOOOOOOOOOOOOO&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">map_str</span><span class="p">:</span>
+            <span class="n">island_map</span> <span class="o">=</span> <span class="n">standard_map</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">island_map</span> <span class="o">=</span> <span class="n">map_str</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">map_str</span> <span class="o">=</span> <span class="n">island_map</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_string_map</span><span class="p">(</span><span class="n">string_map</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">map_str</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_str</span></div>
+
+<div class="viewcode-block" id="Island.map_from_string"><a class="viewcode-back" href="../../island.html#biosim.island.Island.map_from_string">[docs]</a>    <span class="k">def</span> <span class="nf">map_from_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">map_str</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates the numpy array map</span>
+
+<span class="sd">        :param map_str: multi line string</span>
+<span class="sd">        :return: numpy.ndarray</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">island_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_str_manager</span><span class="p">(</span><span class="n">map_str</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">map</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span>
+            <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">island_map</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">island_map</span><span class="p">[</span><span class="mi">0</span><span class="p">])),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">island_map</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">y</span><span class="p">,</span> <span class="n">cell</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">cell</span> <span class="o">==</span> <span class="s1">&#39;O&#39;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="n">Ocean</span><span class="p">()</span>
+                <span class="k">elif</span> <span class="n">cell</span> <span class="o">==</span> <span class="s1">&#39;J&#39;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="n">Jungle</span><span class="p">()</span>
+                <span class="k">elif</span> <span class="n">cell</span> <span class="o">==</span> <span class="s1">&#39;S&#39;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="n">Savannah</span><span class="p">()</span>
+                <span class="k">elif</span> <span class="n">cell</span> <span class="o">==</span> <span class="s1">&#39;D&#39;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="n">Desert</span><span class="p">()</span>
+                <span class="k">elif</span> <span class="n">cell</span> <span class="o">==</span> <span class="s1">&#39;M&#39;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="n">Mountain</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span></div>
+
+<div class="viewcode-block" id="Island.distribute_animals"><a class="viewcode-back" href="../../island.html#biosim.island.Island.distribute_animals">[docs]</a>    <span class="k">def</span> <span class="nf">distribute_animals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ini_pop</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Puts Herbivores and Carnivores into their respective cells in map</span>
+
+<span class="sd">        :param ini_pop: list of dictionaries</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">ini_herbs</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">&#39;loc&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
+                      <span class="s1">&#39;pop&#39;</span><span class="p">:</span> <span class="p">[{</span><span class="s1">&#39;species&#39;</span><span class="p">:</span> <span class="s1">&#39;Herbivore&#39;</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+                               <span class="s1">&#39;weight&#39;</span><span class="p">:</span> <span class="mi">20</span><span class="p">}</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">150</span><span class="p">)]}]</span>
+        <span class="n">ini_carns</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">&#39;loc&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
+                      <span class="s1">&#39;pop&#39;</span><span class="p">:</span> <span class="p">[{</span><span class="s1">&#39;species&#39;</span><span class="p">:</span> <span class="s1">&#39;Carnivore&#39;</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+                               <span class="s1">&#39;weight&#39;</span><span class="p">:</span> <span class="mi">20</span><span class="p">}</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">40</span><span class="p">)]}]</span>
+        <span class="n">standard_pop</span> <span class="o">=</span> <span class="n">ini_herbs</span> <span class="o">+</span> <span class="n">ini_carns</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ini_pop</span><span class="p">:</span>
+            <span class="n">population</span> <span class="o">=</span> <span class="n">standard_pop</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">population</span> <span class="o">=</span> <span class="n">ini_pop</span>
+
+        <span class="k">for</span> <span class="n">dictionary</span> <span class="ow">in</span> <span class="n">population</span><span class="p">:</span>
+            <span class="n">map_row</span> <span class="o">=</span> <span class="n">dictionary</span><span class="p">[</span><span class="s1">&#39;loc&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">map_col</span> <span class="o">=</span> <span class="n">dictionary</span><span class="p">[</span><span class="s1">&#39;loc&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">map_row</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;x-coordinate out of bounds, &#39;</span>
+                                 <span class="s1">&#39;relative to map, for loc: &#39;</span> <span class="o">+</span>
+                                 <span class="nb">str</span><span class="p">((</span><span class="n">map_row</span><span class="p">,</span> <span class="n">map_col</span><span class="p">)))</span>
+
+            <span class="k">elif</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">map_col</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;y-coordinate out of bounds, &#39;</span>
+                                 <span class="s1">&#39;relative to map, for loc: &#39;</span> <span class="o">+</span>
+                                 <span class="nb">str</span><span class="p">((</span><span class="n">map_row</span><span class="p">,</span> <span class="n">map_col</span><span class="p">)))</span>
+
+            <span class="n">cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">[(</span><span class="n">map_row</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">map_col</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)]</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="p">(</span><span class="n">Mountain</span><span class="p">,</span> <span class="n">Ocean</span><span class="p">)):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Animals can not be placed in &#39;</span> <span class="o">+</span>
+                                 <span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">cell</span><span class="p">))</span> <span class="o">+</span> <span class="s1">&#39;. Permitted landscapes: &#39;</span> 
+                                                   <span class="s1">&#39;Jungle, Savannah&#39;</span>
+                                                   <span class="s1">&#39; and Desert.&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">animal</span> <span class="ow">in</span> <span class="n">dictionary</span><span class="p">[</span><span class="s1">&#39;pop&#39;</span><span class="p">]:</span>
+                <span class="n">age</span><span class="p">,</span> <span class="n">weight</span> <span class="o">=</span> <span class="n">animal</span><span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">],</span> <span class="n">animal</span><span class="p">[</span><span class="s1">&#39;weight&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">age</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">age</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">weight</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Violated one of two conditions:</span><span class="se">\n</span><span class="s1">&#39;</span> 
+                                     <span class="s1">&#39;1. Animal age has to be a non-negative&#39;</span> 
+                                     <span class="s1">&#39; integer.</span><span class="se">\n</span><span class="s1">2. Animal weight has to be&#39;</span> 
+                                     <span class="s1">&#39; a non-negative number(float).&#39;</span><span class="p">)</span>
+
+            <span class="n">cell</span><span class="o">.</span><span class="n">populate_cell</span><span class="p">(</span><span class="n">dictionary</span><span class="p">[</span><span class="s1">&#39;pop&#39;</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="Island.get_random_landscapes"><a class="viewcode-back" href="../../island.html#biosim.island.Island.get_random_landscapes">[docs]</a>    <span class="k">def</span> <span class="nf">get_random_landscapes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates a list of randomized landscapes from the numpy array map</span>
+
+<span class="sd">        :return: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">array_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="n">land_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">row</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">array_list</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">col</span><span class="p">]</span>
+
+        <span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">land_list</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">land_list</span></div>
+
+<div class="viewcode-block" id="Island.get_surrounding_landscapes"><a class="viewcode-back" href="../../island.html#biosim.island.Island.get_surrounding_landscapes">[docs]</a>    <span class="k">def</span> <span class="nf">get_surrounding_landscapes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Collects a cell&#39;s neighbouring cells</span>
+<span class="sd">        Returns a list of valid cells for migration</span>
+
+<span class="sd">        :param pos: tuple (cell coordinates)</span>
+<span class="sd">        :return: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">possible_moves</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">pos</span>
+        <span class="n">illegal</span> <span class="o">=</span> <span class="p">(</span><span class="n">Ocean</span><span class="p">,</span> <span class="n">Mountain</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">):</span>
+            <span class="n">possible_moves</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">[</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">x</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">possible_moves</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">[</span><span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">y</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="n">possible_moves</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">y</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">possible_moves</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">valid_moves</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">move</span> <span class="ow">in</span> <span class="n">possible_moves</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">move</span><span class="p">,</span> <span class="n">illegal</span><span class="p">):</span>
+                <span class="n">valid_moves</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">move</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">valid_moves</span></div>
+
+<div class="viewcode-block" id="Island.migrate_island"><a class="viewcode-back" href="../../island.html#biosim.island.Island.migrate_island">[docs]</a>    <span class="k">def</span> <span class="nf">migrate_island</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Iterates through map and initiates migration for each landscape</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">land_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_random_landscapes</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">land</span> <span class="ow">in</span> <span class="n">land_list</span><span class="p">:</span>
+            <span class="n">coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map</span> <span class="o">==</span> <span class="n">land</span><span class="p">)</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">]</span><span class="o">.</span><span class="n">migrate</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">get_surrounding_landscapes</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">]))</span>
+
+        <span class="k">for</span> <span class="n">land</span> <span class="ow">in</span> <span class="n">land_list</span><span class="p">:</span>
+            <span class="n">coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map</span> <span class="o">==</span> <span class="n">land</span><span class="p">)</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">]</span><span class="o">.</span><span class="n">pop_animals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">]</span><span class="o">.</span><span class="n">new_pop</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">]</span><span class="o">.</span><span class="n">new_pop</span> <span class="o">=</span> <span class="p">[[],</span> <span class="p">[]]</span></div>
+
+<div class="viewcode-block" id="Island.populated_island"><a class="viewcode-back" href="../../island.html#biosim.island.Island.populated_island">[docs]</a>    <span class="k">def</span> <span class="nf">populated_island</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">map</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ini_pop</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Populates the island with animals</span>
+
+<span class="sd">        :param map: multi line string (map)</span>
+<span class="sd">        :param ini_pop: list of dictionaries</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_from_string</span><span class="p">(</span><span class="nb">map</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">distribute_animals</span><span class="p">(</span><span class="n">ini_pop</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Island.population_array"><a class="viewcode-back" href="../../island.html#biosim.island.Island.population_array">[docs]</a>    <span class="k">def</span> <span class="nf">population_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">herbivore</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a population array</span>
+<span class="sd">        :param herbivore: bool</span>
+<span class="sd">        :return: numpy.ndarray</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">pop_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="c1">#if herbivore:</span>
+        <span class="c1">#    species = pop_animals[#0]</span>
+        <span class="c1">#else:</span>
+        <span class="c1">#    species = pop_animals[0]</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                <span class="n">pop_array</span><span class="p">[</span><span class="n">cell</span><span class="p">,</span> <span class="n">row</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">[</span><span class="n">cell</span><span class="p">,</span> <span class="n">row</span><span class="p">]</span><span class="o">.</span><span class="n">pop_animals</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">pop_array</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">population_distribution</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the population of herbivores and carnivores for each cell</span>
+<span class="sd">        Cells are listed row by row</span>
+
+<span class="sd">        :return: numpy.ndarray</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">total_pop_herbs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">total_pop_carns</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">row</span><span class="p">:</span>
+                <span class="n">total_pop_herbs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cell</span><span class="o">.</span><span class="n">pop_animals</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+                <span class="n">total_pop_carns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cell</span><span class="o">.</span><span class="n">pop_animals</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span><span class="n">total_pop_herbs</span><span class="p">,</span> <span class="n">total_pop_carns</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">total_island_population</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates total population on the island</span>
+
+<span class="sd">        :return: tuple</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">pop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">population_distribution</span>
+        <span class="n">herbs</span> <span class="o">=</span> <span class="p">[</span><span class="n">pop</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pop</span><span class="p">))]</span>
+        <span class="n">carns</span> <span class="o">=</span> <span class="p">[</span><span class="n">pop</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pop</span><span class="p">))]</span>
+
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">herbs</span><span class="p">),</span> <span class="nb">sum</span><span class="p">(</span><span class="n">carns</span><span class="p">)</span></div>
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">--Modelling the Ecosystem of Rossumøya--</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Includes:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../animals.html">All about the Animals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../landscape.html">Landscapes, the building blocks.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../island.html">Making the Island, setting the scene.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../simulation.html">Simulating the Ecosystem</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Sigve Sørensen & Filip Rotnes.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
