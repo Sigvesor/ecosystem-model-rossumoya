@@ -141,6 +141,3 @@ def test_migrating():
     herb = Herbivore()
     herb.phi = 1
     assert herb.migrating
-
-
-
