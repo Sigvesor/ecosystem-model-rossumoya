@@ -3,13 +3,13 @@
 import matplotlib.pyplot as plt
 #from biosim.landscape import *
 import random
-from island import *
-from landscape import *
-from animals import *
-from map_constructor import *
+from .island import *
+#from landscape import *
+#from animals import *
+#from map_constructor import *
 import pandas as pd
 import numpy as np
-from math import exp as e
+#from math import exp as e
 __author__ = 'Sigve Sorensen', 'Filip Rotnes'
 __email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
 
@@ -100,6 +100,27 @@ class BioSim:
                  range(len(self.carn_list)), self.carn_list, 'b-')
         plt.show()
 
+    def heat_map(self, herbivore=True):
+        if herbivore:
+            col = 'Greens'
+            species = 'Herbivores'
+        else:
+            col = 'Reds'
+            species = 'Carnivores'
+        df = self.population_by_cell
+
+        pop_array = self.island.population_array()
+        #for row in range(len(df)):
+        #    pop_array[(df.x[row]-1, df.y[row]-1)] = df[species][row]
+        
+        heatmap = plt.imshow(pop_array, cmap=col, interpolation='nearest')
+        return heatmap
+
+    def plot_pop_density(self):
+        fig = plt.plot(range(len(self.herb_list)), self.herb_list, 'r-',
+                       range(len(self.carn_list)), self.carn_list, 'b-')
+        return fig
+
 
 
 if __name__ == "__main__":
@@ -129,7 +150,7 @@ if __name__ == "__main__":
                            'weight': 20} for _ in range(40)]}]
     sim = BioSim(ini_pop=ini_herbs, island_map=kart, seed=12634)
 
-    sim.simulate(100)
+    sim.simulate(50)
     sim.add_population(ini_carns)
     sim.simulate(400)
     sim.sim_plot()

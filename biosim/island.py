@@ -4,7 +4,7 @@ __author__ = 'Sigve Sorensen', 'Filip Rotnes'
 __email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
 
 import numpy as np
-from landscape import *
+from .landscape import *
 import random
 
 
@@ -241,6 +241,20 @@ class Island:
 
         self.map = self.map_from_string(map)
         self.distribute_animals(ini_pop)
+
+
+    def population_array(self, herbivore=True):
+        pop_array = np.zeros(self.map.shape)
+        #if herbivore:
+        #    species = pop_animals[#0]
+        #else:
+        #    species = pop_animals[0]
+        for row in range(self.map.shape[1]):
+            for cell in range(self.map.shape[0]):
+                pop_array[cell, row] = len(self.map[cell, row].pop_animals[0])
+        return pop_array
+
+
 
     @property
     def population_distribution(self):
