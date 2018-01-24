@@ -1,0 +1,2 @@
+recursive-include bio *.pyx
+recursive-include examples *.py *.ipynb

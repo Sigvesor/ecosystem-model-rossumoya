@@ -1,0 +1,277 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Making the Island, setting the scene. &#8212; --Modelling the Ecosystem of Rossumøya-- 1.0.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Simulating the Ecosystem" href="simulation.html" />
+    <link rel="prev" title="Landscapes, the building blocks." href="landscape.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-biosim.island">
+<span id="making-the-island-setting-the-scene"></span><h1>Making the Island, setting the scene.<a class="headerlink" href="#module-biosim.island" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="biosim.island.Island">
+<em class="property">class </em><code class="descclassname">biosim.island.</code><code class="descname">Island</code><a class="reference internal" href="_modules/biosim/island.html#Island"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosim.island.Island" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class instantiates an island</p>
+<p>Creates the variables associated with the class</p>
+<dl class="staticmethod">
+<dt id="biosim.island.Island.check_string_map">
+<em class="property">static </em><code class="descname">check_string_map</code><span class="sig-paren">(</span><em>string_map</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biosim/island.html#Island.check_string_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosim.island.Island.check_string_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the multi line string containing landscape distribution
+contains invalid landscape types</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>string_map</strong> – multi line string describing island</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="biosim.island.Island.cycle">
+<code class="descname">cycle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/biosim/island.html#Island.cycle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosim.island.Island.cycle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Conducts one cycle on the island</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="biosim.island.Island.distribute_animals">
+<code class="descname">distribute_animals</code><span class="sig-paren">(</span><em>ini_pop=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biosim/island.html#Island.distribute_animals"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosim.island.Island.distribute_animals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Puts Herbivores and Carnivores into their respective cells in map</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ini_pop</strong> – list of dictionaries</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="biosim.island.Island.get_random_landscapes">
+<code class="descname">get_random_landscapes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/biosim/island.html#Island.get_random_landscapes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosim.island.Island.get_random_landscapes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a list of randomized landscapes from the numpy array map</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="biosim.island.Island.get_surrounding_landscapes">
+<code class="descname">get_surrounding_landscapes</code><span class="sig-paren">(</span><em>pos</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biosim/island.html#Island.get_surrounding_landscapes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosim.island.Island.get_surrounding_landscapes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Collects a cell’s neighbouring cells
+Returns a list of valid cells for migration</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pos</strong> – tuple (cell coordinates)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="biosim.island.Island.map_from_string">
+<code class="descname">map_from_string</code><span class="sig-paren">(</span><em>map_str=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biosim/island.html#Island.map_from_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosim.island.Island.map_from_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates the numpy array map</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>map_str</strong> – multi line string</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">numpy.ndarray</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="biosim.island.Island.map_str_manager">
+<code class="descname">map_str_manager</code><span class="sig-paren">(</span><em>map_str=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biosim/island.html#Island.map_str_manager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosim.island.Island.map_str_manager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Control for multi line string map format</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>map_str</strong> – multi line string</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="biosim.island.Island.migrate_island">
+<code class="descname">migrate_island</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/biosim/island.html#Island.migrate_island"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosim.island.Island.migrate_island" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterates through map and initiates migration for each landscape</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="biosim.island.Island.populated_island">
+<code class="descname">populated_island</code><span class="sig-paren">(</span><em>map=None</em>, <em>ini_pop=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biosim/island.html#Island.populated_island"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosim.island.Island.populated_island" title="Permalink to this definition">¶</a></dt>
+<dd><p>Populates the island with animals</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>map</strong> – multi line string (map)</li>
+<li><strong>ini_pop</strong> – list of dictionaries</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="biosim.island.Island.population_array">
+<code class="descname">population_array</code><span class="sig-paren">(</span><em>herbivore=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/biosim/island.html#Island.population_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#biosim.island.Island.population_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a population array
+:param herbivore: bool
+:return: numpy.ndarray</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="biosim.island.Island.population_distribution">
+<code class="descname">population_distribution</code><a class="headerlink" href="#biosim.island.Island.population_distribution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the population of herbivores and carnivores for each cell
+Cells are listed row by row</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">numpy.ndarray</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="biosim.island.Island.total_island_population">
+<code class="descname">total_island_population</code><a class="headerlink" href="#biosim.island.Island.total_island_population" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates total population on the island</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">tuple</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">--Modelling the Ecosystem of Rossumøya--</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Includes:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="animals.html">All about the Animals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="landscape.html">Landscapes, the building blocks.</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Making the Island, setting the scene.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simulation.html">Simulating the Ecosystem</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="landscape.html" title="previous chapter">Landscapes, the building blocks.</a></li>
+      <li>Next: <a href="simulation.html" title="next chapter">Simulating the Ecosystem</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Sigve Sørensen & Filip Rotnes.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/island.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
