@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import matplotlib.pyplot as plt
-import random
 from .island import *
 import pandas as pd
-import numpy as np
-from math import exp as e
+from .animals import *
 __author__ = 'Sigve Sorensen', 'Filip Rotnes'
 __email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
 
@@ -41,11 +39,18 @@ class BioSim:
         self.carn_list = [self.island.total_island_population[1]]
         df_cols = ['x', 'y', 'Herbivores', 'Carnivores']
         pop = pd.DataFrame(self.island.population_distribution,
-                           columns= df_cols[2:4])
+                           columns=df_cols[2:4])
         empty_df = [[i+1, j+1, 0, 0] for j in range(n_cols)
                     for i in range(n_rows)]
-        self.pop_by_cell = pd.DataFrame(data= empty_df, columns=df_cols)
+        self.pop_by_cell = pd.DataFrame(data=empty_df, columns=df_cols)
         self.pop_by_cell.update(pop)
+        self.ax_map = None
+        self.ax_herb = None
+        self.ax_carn = None
+        self.ax_graph = None
+        self.hax = None
+        self.cax = None
+        self.new_sim = False
 
     @property
     def population_by_cell(self):
@@ -79,7 +84,6 @@ class BioSim:
 
         :return: int
         """
-
         return self.year
 
     @property
@@ -92,8 +96,7 @@ class BioSim:
 
         return self.herb_list[-1] + self.carn_list[-1]
 
-
-    def simulate(self, num_steps, vis_steps=1, img_steps=None):
+    def simulate(self, num_steps, vis_steps=1, img_steps=1):
 
         """
         Conducting the simulation, deciding number of cycles.
@@ -112,8 +115,10 @@ class BioSim:
             if self.year % vis_steps == 0:
                 plt.ion()
                 self.sim_plot()
+                if self.year+1 % img_steps == 0:
+                    plt.savefig('biosim_project/animation/biosim_' +
+                                str(self.year).zfill(5)+'.png')
             self.year += 1
-
 
     def add_population(self, population=None):
         """
@@ -126,20 +131,37 @@ class BioSim:
         self.island.distribute_animals(population)
 
     def sim_plot(self):
-
         if self.new_sim:
-            fig = plt.figure()
-            self.ax_herb = fig.add_subplot(223)
-            plt.title('Herbivore density')
-            self.ax_carn = fig.add_subplot(224)
+            fig, ((self.ax_graph, self.ax_map), (self.ax_herb, self.ax_carn)) \
+                = plt.subplots(2, 2)
+            self.ax_map = plt.subplot2grid((3, 3), (2, 1))
+            self.ax_herb = plt.subplot2grid((3, 3), (2, 0))
+            self.ax_carn = plt.subplot2grid((3, 3), (2, 2))
+            self.ax_graph = plt.subplot2grid((3, 3), (0, 0),
+                                             colspan=3, rowspan=2)
+            plt.tight_layout()
         self.heat_map()
-        if self.new_sim:
-            self.ax_map = fig.add_subplot(222)
         self.plot_map()
-        if self.new_sim:
-            self.ax_graph = fig.add_subplot(221)
         self.plot_pop_density()
-        plt.title('Year: '+str(self.years_passed))
+        if self.new_sim:
+            fig.colorbar(self.hax, ax=self.ax_herb, orientation='horizontal',
+                         ticks=[0, 100, 200], shrink=0.85)
+            self.ax_herb.axes.get_xaxis().set_ticklabels([])
+            self.ax_herb.axes.get_yaxis().set_ticklabels([])
+            self.ax_carn.axes.get_xaxis().set_ticklabels([])
+            self.ax_carn.axes.get_yaxis().set_ticklabels([])
+            self.ax_map.axes.get_xaxis().set_ticklabels([])
+            self.ax_map.axes.get_yaxis().set_ticklabels([])
+            self.ax_map.axes.get_xaxis().set_ticks([])
+            self.ax_map.axes.get_yaxis().set_ticks([])
+            self.ax_herb.axes.get_xaxis().set_ticks([])
+            self.ax_herb.axes.get_yaxis().set_ticks([])
+            self.ax_carn.axes.get_xaxis().set_ticks([])
+            self.ax_carn.axes.get_yaxis().set_ticks([])
+            self.ax_graph.legend(["Herbivores", "Carnivores"])
+            fig.colorbar(self.cax, ax=self.ax_carn, ticks=[0, 100, 200],
+                         orientation='horizontal', shrink=0.85)
+            self.ax_graph.set_ylabel('number of animals')
         plt.pause(0.000001)
         self.new_sim = False
 
@@ -148,19 +170,25 @@ class BioSim:
         Returns a heat-map, describing population density and movements
         """
         pop_array_h = self.island.population_array()
-        self.ax_herb.imshow(pop_array_h, cmap='Greens', interpolation='nearest')
+
+        self.hax = self.ax_herb.imshow(pop_array_h, cmap='Greens',
+                                       interpolation='nearest', vmin=0,
+                                       vmax=200)
+        self.ax_herb.set_title('Herbivore density')
 
         pop_array_c = self.island.population_array(False)
-        self.ax_carn.imshow(pop_array_c, cmap='Reds', interpolation='nearest')
-        plt.title('Carnivore density')
+        self.cax = self.ax_carn.imshow(pop_array_c, cmap='Reds',
+                                       interpolation='nearest', vmin=0,
+                                       vmax=200)
+        self.ax_carn.set_title('Carnivore density')
 
     def plot_pop_density(self):
         """
         Plots the population density for each
         """
-        self.ax_graph.plot(range(len(self.herb_list)), self.herb_list, 'r-',
-                           range(len(self.carn_list)), self.carn_list, 'b-')
-        plt.title('Total populations per year')
+        self.ax_graph.plot(range(len(self.herb_list)), self.herb_list, 'g-',
+                           range(len(self.carn_list)), self.carn_list, 'r-')
+        self.ax_graph.set_title('Total populations per year')
 
     def plot_map(self):
         rbg_value = {'D': (1., 1., 0.5),
@@ -170,13 +198,9 @@ class BioSim:
                      'S': (0.5, 1., 0.5)}
         rbg_map = [[rbg_value[x] for x in row] for row in self.island.map_str]
         self.ax_map.imshow(rbg_map)
-        plt.title('Island map')
-
+        self.ax_map.set_title('Island map')
 
 if __name__ == "__main__":
-    import timeit
-
-    t0 = timeit.default_timer()
 
     kart = """OOOOOOOOOOOOOOOOOOOOO
         OOOOOOOOSMMMMJJJJJJJO
@@ -192,16 +216,14 @@ if __name__ == "__main__":
         OOOSSSSJJJJJJJOOOOOOO
         OOOOOOOOOOOOOOOOOOOOO"""
 
-    ini_herbs = [{'loc': (2, 20),
+    ini_herbs = [{'loc': (10, 2),
                   'pop': [{'species': 'Herbivore', 'age': 5,
                            'weight': 20} for _ in range(150)]}]
-    ini_carns = [{'loc': (2, 20),
+    ini_carns = [{'loc': (20, 2),
                   'pop': [{'species': 'Carnivore', 'age': 5,
                            'weight': 20} for _ in range(40)]}]
     sim = BioSim(ini_pop=ini_herbs, island_map=kart, seed=12634)
-
-    sim.simulate(30, vis_steps=5)
+    sim.simulate(30, 1, 2000)
+    sim.simulate(30, vis_steps=10)
     sim.add_population(ini_carns)
     sim.simulate(400)
-    sim.sim_plot()
-    print(timeit.default_timer() - t0)

@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-__author__ = 'Sigve Sorensen', 'Filip Rotnes'
-__email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
-
 import numpy as np
 from .landscape import *
 import random
+
+__author__ = 'Sigve Sorensen', 'Filip Rotnes'
+__email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
 
 
 class Island:
@@ -87,7 +87,6 @@ class Island:
         :param map_str: multi line string
         :return: list
         """
-
         standard_map = """OOOOOOOOOOOOOOOOOOOOO
         OOOOOOOOSMMMMJJJJJJJO
         OSSSSSJJJJMMJJJJJJJOO
@@ -249,15 +248,15 @@ class Island:
             self.map[x, y].pop_animals = self.map[x, y].new_pop
             self.map[x, y].new_pop = [[], []]
 
-    def populated_island(self, map=None, ini_pop=None):
+    def populated_island(self, island_map=None, ini_pop=None):
         """
         Populates the island with animals
 
-        :param map: multi line string (map)
+        :param island_map: multi line string (map)
         :param ini_pop: list of dictionaries
         """
 
-        self.map = self.map_from_string(map)
+        self.map = self.map_from_string(island_map)
         self.distribute_animals(ini_pop)
 
     def population_array(self, herbivore=True):
@@ -268,14 +267,10 @@ class Island:
         """
 
         pop_array = np.zeros(self.map.shape)
-        #if herbivore:
-        #    species = pop_animals[#0]
-        #else:
-        #    species = pop_animals[0]
         if herbivore:
-            i=0
+            i = 0
         else:
-            i=1
+            i = 1
         for row in range(self.map.shape[1]):
             for cell in range(self.map.shape[0]):
                 pop_array[cell, row] = len(self.map[cell, row].pop_animals[i])
@@ -312,4 +307,3 @@ class Island:
         carns = [pop[i][1] for i in range(len(pop))]
 
         return sum(herbs), sum(carns)
-

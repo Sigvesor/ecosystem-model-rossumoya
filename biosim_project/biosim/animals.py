@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-__author__ = 'Sigve Sorensen', 'Filip Rotnes'
-__email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
-
 import random
 from math import exp as e
+
+__author__ = 'Sigve Sorensen', 'Filip Rotnes'
+__email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
 
 
 class Animal:
@@ -243,9 +243,9 @@ class Carnivore(Animal):
         delta_phi = self.phi - herbivore.phi
         delta_phi_max = self.default_params['DeltaPhiMax']
 
-        if delta_phi <= 0:
+        if delta_phi <= 0.:
             return 0
-        elif 0 < delta_phi < delta_phi_max:
+        elif 0. < delta_phi < delta_phi_max:
             return delta_phi / delta_phi_max
         else:
             return 1
