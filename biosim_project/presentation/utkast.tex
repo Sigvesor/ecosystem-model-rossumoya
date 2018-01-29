@@ -1,0 +1,209 @@
+\documentclass[aspectratio=169]{beamer}
+
+\usetheme[progressbar=frametitle]{metropolis}
+\usepackage{appendixnumberbeamer}
+
+\usepackage{booktabs}
+\usepackage[scale=2]{ccicons}
+
+\usepackage{pgfplots}
+\usepgfplotslibrary{dateplot}
+
+\usepackage{graphicx}
+\graphicspath{{}}
+
+\usepackage{color}
+
+\usepackage{xspace}
+
+\usepackage{wrapfig}
+
+\usepackage{amsmath}
+
+\usepackage{tabstackengine} % stacking to annotate matrices
+
+\newcommand{\themename}{\textbf{\textsc{metropolis}}\xspace}
+
+\usepackage{caption}
+%\captionsetup[figure]{font=tiny,labelfont=tiny} % did this work at all?
+
+\title{Modelling the Ecosystem of Rossumøya}
+\subtitle{Final project of INF200}
+% \date{\today}
+\date{30.01.2018}
+\author{Filip Rotnes, Sigve Sorensen}
+\institute{Norwegian University of Life Sciences}
+\titlegraphic{\hfill\includegraphics[scale=0.1]{nmbu_logo}}
+% \usepackage{color}
+% \setbeamercolor{progress bar}{\color{green}} % change progress bar
+% to nmbu logo-color?
+\begin{document}
+
+\maketitle
+
+\begin{frame}{Table of contents}
+  \setbeamertemplate{section in toc}[sections numbered]
+  \tableofcontents[hideallsubsections]
+\end{frame}
+
+\begin{frame}
+
+python simulation.py
+
+main-method:
+- map data
+- steps
+- seed
+- initial population determined
+- creates an instance of BioSim(map, pop, seed)
+
+1)Definition
+
+1.1) Creates the framework
+
+Island()
+\rightarrow populated island(map, pop)
+	\rightarrow map_from_string(map)
+		\rightarrow map_str_manager(map)
+			\rightarrow check_str_map(map)
+			
+1.2) Populates the framework
+
+Island()
+\rightarrow distribute_animals(pop)
+	Landscape()
+	\rightarrow populate_cell(pop)
+		Animal()
+			\rightarrow Herbivore()
+			\rightarrow Carnivore()
+	
+1.3)Island()		
+	pd.DF \leftarrow population_distribution()
+	
+
+2)Simulation
+
+Biosim.simulate(steps)
+
+General procedure:
+Island() \rightarrow Landscape() \rightarrow Animal()
+
+Island()
+	\rightarrow cycle()
+	
+2.1)
+
+Landscape()
+	\rightarrow regenerate()
+	
+2.2) 
+
+Landscape()
+	\rightarrow fitness_sort()
+	
+2.3)
+
+Landscape()
+	\rightarrow eat_request_herb()
+		Herbivore(Animal)
+		\rightarrow eating(available_fodder)
+		
+2.4)
+
+Landscape()
+	\rightarrow eat_request_carn()
+		Carnivore(Animal)
+		\rightarrow eating(herbs)
+			\rightarrow prob_eating(herb)
+			
+2.5)
+
+Landscape()
+	\rightarrow update_fitness()
+		Animal()
+		\rightarrow fitness()
+		
+2.6)
+
+Landscape()
+	\rightarrow reproduction()
+		Animal()
+		\rightarrow birth(n_animals)
+		
+--
+
+2.7)
+
+Island()
+	\rightarrow migrate_island()
+		\rightarrow get_random_landscapes()
+	Landscape()
+		\rightarrow migrate(get_surrounding_landscapes())
+		Animal()
+			\rightarrow migrating()
+			Herbivore(Animal)
+				\rightarrow new_grassland(neighbours)
+					\rightarrow propensity(neighbour)
+					\rightarrow abundance_fodder_h(neighbour)
+						\rightarrow random.random()
+						
+			Carnivore(Animal)
+				\rightarrow new_hunting_land(neighbours)
+					\rightarrow propensity(neighbour)
+					\rightarrow abundance_fodder_c(neighbour)
+						\rightarrow random.random()
+						
+--
+
+2.8)
+
+Landscape()
+	\rightarrow aging()
+	Animal()
+		\rightarrow ages()
+		
+2.9)
+
+Landscape()
+	\rightarrow weightloss()
+		Animal()
+			weightloss()
+			
+2.10)
+
+Landscape()
+	\rightarrow death()
+	Animal()
+		\rightarrow dies(
+		
+2.11)
+
+Island()
+	\rightarrow total_island_population()
+	\rightarrow population_distribution()
+	
+3) Analysis
+
+3.1) Plot
+
+Simulation()
+\rightarrow subplot()
+\rightarrow heat_plot()
+	\rightarrow population_array()
+\rightarrow pop_density()
+\rightarrow plot_map()
+
+Option:
+\rightarrow add_population() 
+	\rightarrow distribute_animals()
+	
+\rightarrow (2)
+
+\end{frame}
+
+\section{Introduction}
+
+% \begin{frame}[fragile]{Can a Biologist Fix a Radio?}
+% Det var ikke dette presentasjonen skulle handle om
+\end{frame}
+\end{document}
