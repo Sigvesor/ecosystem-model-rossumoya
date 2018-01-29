@@ -1,9 +1,14 @@
 # -*- coding: utf-8 -*-
 
 import matplotlib.pyplot as plt
+import matplotlib.patches as patches
 from .island import *
 import pandas as pd
 from .animals import *
+import os
+from subprocess import call
+from mpl_toolkits.axes_grid.anchored_artists import AnchoredText
+
 __author__ = 'Sigve Sorensen', 'Filip Rotnes'
 __email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
 
@@ -115,10 +120,11 @@ class BioSim:
             if self.year % vis_steps == 0:
                 plt.ion()
                 self.sim_plot()
-                if self.year+1 % img_steps == 0:
-                    plt.savefig('biosim_project/animation/biosim_' +
-                                str(self.year).zfill(5)+'.png')
+
             self.year += 1
+            if self.year % img_steps == 0:
+                plt.savefig('biosim_project/animation/biosim_' +
+                            str(self.year).zfill(5) + '.png')
 
     def add_population(self, population=None):
         """
@@ -158,10 +164,11 @@ class BioSim:
             self.ax_herb.axes.get_yaxis().set_ticks([])
             self.ax_carn.axes.get_xaxis().set_ticks([])
             self.ax_carn.axes.get_yaxis().set_ticks([])
-            self.ax_graph.legend(["Herbivores", "Carnivores"])
+            self.ax_graph.legend(["Herbivores", "Carnivores"], loc=2)
             fig.colorbar(self.cax, ax=self.ax_carn, ticks=[0, 100, 200],
                          orientation='horizontal', shrink=0.85)
             self.ax_graph.set_ylabel('number of animals')
+
         plt.pause(0.000001)
         self.new_sim = False
 
@@ -188,7 +195,9 @@ class BioSim:
         """
         self.ax_graph.plot(range(len(self.herb_list)), self.herb_list, 'g-',
                            range(len(self.carn_list)), self.carn_list, 'r-')
-        self.ax_graph.set_title('Total populations per year')
+        self.ax_graph.set_title('Total populations until year '+
+                                str(self.years_passed + 1))
+
 
     def plot_map(self):
         rbg_value = {'D': (1., 1., 0.5),
@@ -199,6 +208,25 @@ class BioSim:
         rbg_map = [[rbg_value[x] for x in row] for row in self.island.map_str]
         self.ax_map.imshow(rbg_map)
         self.ax_map.set_title('Island map')
+        #at = AnchoredText("Figure 1a",
+        #                  prop=dict(size=8), frameon=True,
+        #                  loc=1)
+        #self.ax_map.add_artist(at)
+        box = self.ax_map.get_position()
+        #plt.figlegend(('Ocean', 'Desert'), (patches.Patch(color='b'), patches.Patch(color='g')), loc=1)
+        desert_patch = mpatches.Patch(color=(1., 1., 0.5), label='Desert')
+        jungle_patch = mpatches.Patch(color=(0., 0.6, 0.), label='Jungle')
+        mountain_patch = mpatches.Patch(color=(0.5, 0.5, 0.5), label='Mountain')
+        ocean_patch = mpatches.Patch(color=(0., 0., 1.), label='Ocean')
+        savannah_patch = mpatches.Patch(color=(0.5, 1., 0.5), label='Savannah')
+
+        self.ax_map.legend(handles=[ocean_patch, desert_patch, mountain_patch,
+                            mountain_patch, jungle_patch,savannah_patch],
+                            bbox_to_anchor=(1.5, 1), fontsize=6)
+
+    def make_movie(self):
+
+        #call('ffmpeg -i biosim_project/animation/biosim_%05d.png output.gif')
 
 if __name__ == "__main__":
 
@@ -223,7 +251,7 @@ if __name__ == "__main__":
                   'pop': [{'species': 'Carnivore', 'age': 5,
                            'weight': 20} for _ in range(40)]}]
     sim = BioSim(ini_pop=ini_herbs, island_map=kart, seed=12634)
-    sim.simulate(30, 1, 2000)
-    sim.simulate(30, vis_steps=10)
+    sim.simulate(100, 1, 1)
+    sim.simulate(100)
     sim.add_population(ini_carns)
     sim.simulate(400)
