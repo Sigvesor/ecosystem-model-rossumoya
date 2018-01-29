@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 
+from .animals import *
+
 __author__ = 'Sigve Sorensen', 'Filip Rotnes'
 __email__ = 'sigvsore@nmbu.no', 'firo@nmbu.no'
-
-from math import exp as e
-from .animals import *
-import random
 
 
 class Landscape:
@@ -233,7 +231,7 @@ class Landscape:
         if isinstance(self, (Ocean, Mountain)):
             return 0
         else:
-            return e(animal.default_params['lambda'] * epsilon) # kan være funk i animal..
+            return e(animal.default_params['lambda'] * epsilon)
 
     def migrate(self, neighbours):
         """
@@ -248,12 +246,12 @@ class Landscape:
                     animal.new_grassland(neighbours).append(animal)
                 elif animal.migrating and animal.is_carnivore:
                     animal.new_hunting_land(neighbours).append(animal)
-                else:                                                           # hvis dyret ikke skal gå
+                else:
                     if animal.is_herbivore:
                         self.new_pop[0].append(animal)
                     elif animal.is_carnivore:
                         self.new_pop[1].append(animal)
-        self.pop_animals = [[], []]                                             # alle dyr skal være i en new_pop i cella eller en nabo; tøm pop_animals
+        self.pop_animals = [[], []]
 
 
 class Jungle(Landscape):
